@@ -945,6 +945,13 @@ onMounted(() => {
 /* 表格紧贴筛选栏 */
 .table-card {
   margin-top: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+.table-card :deep(.el-card__body) {
+  padding: 0;
+  background: transparent;
 }
 
 /* ===================== 大类徽标：印章式描边轮廓 ===================== */

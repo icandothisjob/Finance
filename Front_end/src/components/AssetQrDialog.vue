@@ -63,6 +63,13 @@
             :alt="mode === 'label' ? '标签卡预览' : '二维码'"
             :class="['qr-img', mode === 'label' ? 'is-label' : 'is-plain']"
           />
+          <div v-else-if="loadError" key="error" class="qr-error">
+            <div class="qr-error-title">二维码加载失败</div>
+            <div class="qr-error-detail" :title="loadError">{{ loadError }}</div>
+            <button type="button" class="qr-error-retry" @click="loadImage">
+              重新加载
+            </button>
+          </div>
           <div v-else key="placeholder" class="qr-placeholder">加载中…</div>
         </Transition>
       </div>
@@ -137,7 +144,7 @@
 import { computed, ref, watch } from 'vue'
 import { toast } from '../utils/toast'
 import { Download, Refresh } from '@element-plus/icons-vue'
-import { getToken } from '../utils/auth'
+import request from '../api/request'
 import { getAssetQrInfo, regenerateAssetToken } from '../api/assets'
 
 const props = defineProps({
@@ -155,6 +162,7 @@ const copied = ref(false)
 const mode = ref('plain') // 'plain' | 'label'
 const pendingMode = ref('plain') // 仅用于切换按钮底色滑动动画的高亮
 const canvasRef = ref(null)
+const loadError = ref('')
 
 const currentImage = computed(() =>
   mode.value === 'label' ? labelPreviewSrc.value : imgSrc.value,
@@ -187,8 +195,15 @@ const labelItems = computed(() => {
 async function onOpen() {
   if (!props.asset) return
   loading.value = true
+  loadError.value = ''
   try {
     qrInfo.value = await getAssetQrInfo(props.asset.id)
+  } catch (e) {
+    console.error('[AssetQrDialog] 获取二维码信息失败:', e)
+    loading.value = false
+    return
+  }
+  try {
     await loadImage()
   } finally {
     loading.value = false
@@ -196,22 +211,49 @@ async function onOpen() {
 }
 
 async function loadImage() {
+  if (imgSrc.value) {
+    URL.revokeObjectURL(imgSrc.value)
+  }
   imgSrc.value = ''
   labelPreviewSrc.value = ''
+  loadError.value = ''
   if (!props.asset) return
-  const t = getToken()
   const url = `/api/assets/${props.asset.id}/qrcode.png?ts=${Date.now()}`
-  const res = await fetch(url, {
-    headers: t ? { Authorization: `Bearer ${t}` } : {},
-  })
-  if (!res.ok) {
-    toast.error('二维码加载失败')
-    return
-  }
-  const blob = await res.blob()
-  imgSrc.value = URL.createObjectURL(blob)
-  if (mode.value === 'label') {
-    renderLabelPreview()
+  try {
+    // 走统一 axios 实例：自动带 token、统一 401 跳转、统一 toast 错误
+    const blob = await request.get(url, {
+      responseType: 'blob',
+      timeout: 20000,
+    })
+    if (!(blob instanceof Blob)) {
+      throw new Error('返回数据格式异常')
+    }
+    if (blob.size === 0) {
+      throw new Error('二维码图片为空（0 字节）')
+    }
+    if (blob.type && !blob.type.startsWith('image/')) {
+      // 后端可能返回了 JSON 错误体（被转成 blob）
+      const text = await blob.text().catch(() => '')
+      throw new Error(text || `非图片响应：${blob.type}`)
+    }
+    imgSrc.value = URL.createObjectURL(blob)
+    if (mode.value === 'label') {
+      renderLabelPreview()
+    }
+  } catch (e) {
+    const status = e?.response?.status
+    const detail =
+      (typeof e?.response?.data === 'string' && e.response.data) ||
+      e?.response?.data?.detail ||
+      e?.message ||
+      '未知错误'
+    const msg = status ? `HTTP ${status}：${detail}` : String(detail)
+    loadError.value = msg
+    console.error('[AssetQrDialog] 二维码加载失败:', {
+      url,
+      status,
+      error: e,
+    })
   }
 }
 
@@ -384,10 +426,15 @@ function fillTextEllipsis(ctx, text, x, y, maxWidth, fontSize) {
 async function onRegenerate() {
   if (!props.asset) return
   regenLoading.value = true
+  loadError.value = ''
   try {
     qrInfo.value = await regenerateAssetToken(props.asset.id)
     await loadImage()
-    toast.success('已刷新，旧二维码立即失效')
+    if (!loadError.value) {
+      toast.success('已刷新，旧二维码立即失效')
+    }
+  } catch (e) {
+    console.error('[AssetQrDialog] 刷新二维码失败:', e)
   } finally {
     regenLoading.value = false
   }
@@ -420,14 +467,17 @@ async function onCopy() {
 watch(
   () => props.modelValue,
   (v) => {
-    if (!v && imgSrc.value) {
-      URL.revokeObjectURL(imgSrc.value)
+    if (!v) {
+      if (imgSrc.value) {
+        URL.revokeObjectURL(imgSrc.value)
+      }
       imgSrc.value = ''
       labelPreviewSrc.value = ''
       qrInfo.value = null
       copied.value = false
       mode.value = 'plain'
       pendingMode.value = 'plain'
+      loadError.value = ''
     }
   },
 )
@@ -483,6 +533,45 @@ watch(
 .qr-placeholder {
   color: #b9a78a;
   font-size: 12px;
+}
+.qr-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 320px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.qr-error-title {
+  color: #c0413a;
+  font-size: 14px;
+  font-weight: 600;
+}
+.qr-error-detail {
+  color: #8a7355;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-all;
+  max-height: 96px;
+  overflow: auto;
+}
+.qr-error-retry {
+  appearance: none;
+  border: 1px solid rgba(201, 160, 99, 0.45);
+  background: #fff;
+  color: #6b5d44;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.qr-error-retry:hover {
+  background: #faf3e3;
+  border-color: #c9a063;
+  color: #5e4a2e;
 }
 .qr-info {
   width: 100%;
