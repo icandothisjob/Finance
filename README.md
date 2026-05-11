@@ -109,6 +109,71 @@ chmod +x deploy.sh
 
 数据库数据持久化在 `./mysql_data/` 目录，删除该目录会清空所有数据。
 
+### 国内服务器无法访问 GitHub 时的镜像加速
+
+国内云服务器（腾讯云 / 阿里云等）`git pull` 经常出现：
+
+```
+fatal: unable to access 'https://github.com/...': GnuTLS recv error (-110)
+fatal: Failed to connect to github.com port 443 after 135545 ms: Couldn't connect to server
+```
+
+这是网络问题，不是代码问题。把 git remote 换成国内可访问的代理镜像即可：
+
+```bash
+cd ~/asset
+git remote set-url origin https://ghfast.top/https://github.com/icandothisjob/Finance.git
+./deploy.sh update
+```
+
+> 仓库地址：<https://github.com/icandothisjob/Finance.git>
+> 当前可用镜像：`https://ghfast.top/`（前缀拼上完整 GitHub URL 即可）
+
+如果 `ghfast.top` 哪天也失效了，可用如下命令测试其他镜像可用性：
+
+```bash
+curl -m 5 -sI https://ghproxy.com/ -o /dev/null -w "ghproxy: %{http_code}\n"
+curl -m 5 -sI https://ghfast.top/ -o /dev/null -w "ghfast:  %{http_code}\n"
+curl -m 5 -sI https://kkgithub.com/ -o /dev/null -w "kkgithub: %{http_code}\n"
+curl -m 5 -sI https://bgithub.xyz/ -o /dev/null -w "bgithub: %{http_code}\n"
+```
+
+返回 `200` / `301` / `302` 即可用，`000` 表示不通。
+
+- `ghproxy` 类型（拼接 GitHub URL）：`ghproxy.com`、`ghfast.top`、`gh-proxy.com`
+  ```bash
+  git remote set-url origin https://ghfast.top/https://github.com/icandothisjob/Finance.git
+  ```
+- 域名替换类型（直接换主域名）：`kkgithub.com`、`bgithub.xyz`
+  ```bash
+  git remote set-url origin https://kkgithub.com/icandothisjob/Finance.git
+  ```
+
+恢复原始 remote：
+
+```bash
+git remote set-url origin https://github.com/icandothisjob/Finance.git
+```
+
+### 兜底：网络完全不通时手动同步单个文件
+
+若所有镜像都不通且只改了少量文件，可从本机 scp 直传：
+
+```powershell
+# 在本机 Windows PowerShell 中执行
+cd e:\AAA_DAIL\资产管理平台
+scp Front_end/nginx.conf ubuntu@1.14.63.96:~/asset/Front_end/nginx.conf
+```
+
+然后到服务器只重建对应容器：
+
+```bash
+cd ~/asset
+docker compose up -d --build frontend
+```
+
+> 注意：直接 scp 会让 git 工作区处于"有未提交修改"状态，下次能连 GitHub 时用 `git stash && git pull && git stash pop` 同步。
+
 ## 后续可扩展方向
 
 - 用户登录与权限管理（JWT）

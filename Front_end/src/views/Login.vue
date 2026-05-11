@@ -1,5 +1,30 @@
 <template>
-  <div class="page" :style="{ backgroundImage: `url(${bgImg})` }">
+  <!-- 预加载层：在背景大图加载完毕前显示金/黑半环旋转动画 -->
+  <Transition name="preloader-fade">
+    <div v-if="preloading" class="preloader">
+      <div class="semicircle">
+        <div>
+          <div>
+            <div>
+              <div>
+                <div>
+                  <div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
+
+  <div
+    v-if="!preloading"
+    class="page"
+    :style="{ backgroundImage: `url(${bgImg})` }"
+  >
     <!-- 整页暗色蒙版，让表单更清晰 -->
     <div class="page-mask"></div>
 
@@ -42,12 +67,32 @@
             </svg>
             <input
               class="input"
-              type="password"
+              :type="showPwd ? 'text' : 'password'"
               placeholder="Password"
               v-model="form.password"
               autocomplete="current-password"
               @keyup.enter="onSubmit"
             />
+            <button
+              type="button"
+              class="pwd-toggle"
+              :aria-label="showPwd ? '隐藏密码' : '显示密码'"
+              :title="showPwd ? '隐藏密码' : '显示密码'"
+              @click="showPwd = !showPwd"
+            >
+              <svg v-if="showPwd" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                />
+              </svg>
+              <svg v-else viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"
+                />
+              </svg>
+            </button>
           </div>
 
           <!-- 验证码 -->
@@ -92,7 +137,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { nextTick, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from '../utils/toast'
 import { login as apiLogin } from '../api/auth'
@@ -105,10 +150,12 @@ const route = useRoute()
 const captchaCanvas = ref(null)
 const loading = ref(false)
 const captchaCode = ref('')
+const preloading = ref(true)
+const showPwd = ref(false)
 
 const form = reactive({
-  username: 'admin',
-  password: 'admin',
+  username: '',
+  password: '',
   captcha: '',
 })
 
@@ -205,10 +252,109 @@ async function onSubmit() {
   }
 }
 
-onMounted(drawCaptcha)
+// 预加载背景大图 + 至少展示 600ms 动画，避免一闪而过
+onMounted(() => {
+  const MIN_SHOW_MS = 600
+  const startedAt = Date.now()
+
+  const finishPreload = () => {
+    const elapsed = Date.now() - startedAt
+    const remain = Math.max(0, MIN_SHOW_MS - elapsed)
+    setTimeout(() => {
+      preloading.value = false
+    }, remain)
+  }
+
+  const img = new Image()
+  img.onload = finishPreload
+  img.onerror = finishPreload
+  img.src = bgImg
+
+  // 兜底：网络异常时 8s 强制进入登录页
+  setTimeout(() => {
+    if (preloading.value) preloading.value = false
+  }, 8000)
+})
+
+// 登录页元素挂载后再绘制验证码（此时 canvas 才存在）
+watch(preloading, async (v) => {
+  if (!v) {
+    await nextTick()
+    drawCaptcha()
+  }
+})
 </script>
 
 <style scoped>
+/* ===================== 预加载层：金/黑配色半环旋转 ===================== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background:
+    radial-gradient(ellipse at center, #1a1410 0%, #000 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* 预加载淡出 */
+.preloader-fade-leave-active {
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.preloader-fade-leave-to {
+  opacity: 0;
+}
+/* 旋转半环（嵌套 div 形成多层金色半圆，旋转错位形成动感效果） */
+.semicircle,
+.semicircle div {
+  width: 280px;
+  height: 280px;
+  animation: 6s rotate141 infinite linear;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+.semicircle {
+  filter: drop-shadow(0 0 20px rgba(255, 224, 166, 0.6))
+    drop-shadow(0 0 40px rgba(255, 224, 166, 0.25));
+}
+/* 小屏适配：避免动画超出视口 */
+@media (max-width: 600px) {
+  .semicircle,
+  .semicircle div {
+    width: 220px;
+    height: 220px;
+  }
+}
+.semicircle div {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+}
+.semicircle:before,
+.semicircle div:before {
+  content: '';
+  width: 100%;
+  height: 50%;
+  display: block;
+  background: radial-gradient(
+    transparent,
+    transparent 65%,
+    #ffe0a6 65%,
+    #ffe0a6
+  );
+  background-size: 100% 200%;
+}
+@keyframes rotate141 {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* ===================== 整页：背景图铺满 ===================== */
 .page {
   width: 100vw;
@@ -258,6 +404,72 @@ onMounted(drawCaptcha)
   filter: drop-shadow(0 8px 24px rgba(255, 224, 166, 0.25));
   user-select: none;
   -webkit-user-drag: none;
+}
+
+/* ===================== 登录页入场动画 ===================== */
+.page-mask {
+  animation: page-fade-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.title-img {
+  animation: title-bloom 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.form {
+  animation: form-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+.form .form-title {
+  animation: enter-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.28s;
+}
+.form .input-container:nth-of-type(1) {
+  animation: enter-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.38s;
+}
+.form .input-container:nth-of-type(2) {
+  animation: enter-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.48s;
+}
+.form .input-container:nth-of-type(3) {
+  animation: enter-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.58s;
+}
+.form .login-button {
+  animation: enter-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.68s;
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes title-bloom {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes form-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* 小屏：表单居中 */
@@ -415,6 +627,51 @@ onMounted(drawCaptcha)
 .input-container:focus-within .field-icon {
   fill: #ffe0a6;
   filter: drop-shadow(0 0 4px rgba(255, 224, 166, 0.6));
+}
+
+/* 隐藏 Edge / IE 自带的密码显示按钮和清除按钮，统一用自定义眼睛 */
+.input-container .input::-ms-reveal,
+.input-container .input::-ms-clear {
+  display: none;
+}
+
+/* 自定义"显示密码"按钮：默认白色，input 聚焦时联动变金，悬停眼睛时强化金色辉光 */
+.pwd-toggle {
+  flex-shrink: 0;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  width: 30px;
+  height: 30px;
+  margin-right: 4px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color 0.2s ease, background 0.2s ease,
+    filter 0.2s ease, transform 0.15s ease;
+}
+/* input 聚焦时联动：眼睛淡金 */
+.input-container:focus-within .pwd-toggle {
+  color: rgba(255, 224, 166, 0.85);
+  filter: drop-shadow(0 0 4px rgba(255, 224, 166, 0.45));
+}
+/* 鼠标悬停 / 键盘聚焦眼睛本身：完全金色 + 强辉光 + 淡背景（specificity 与上一条对齐，靠书写顺序覆盖） */
+.input-container .pwd-toggle:hover,
+.input-container .pwd-toggle:focus-visible {
+  color: #ffe0a6;
+  background: rgba(255, 224, 166, 0.08);
+  filter: drop-shadow(0 0 6px rgba(255, 224, 166, 0.6));
+}
+.pwd-toggle:active {
+  transform: scale(0.94);
+}
+.pwd-toggle:focus-visible {
+  outline: 1px solid rgba(255, 224, 166, 0.7);
+  outline-offset: 2px;
 }
 
 .captcha-container .input {
