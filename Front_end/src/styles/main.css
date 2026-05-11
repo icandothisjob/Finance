@@ -1,0 +1,123 @@
+/* ============================================================
+   全局变量：浅色 + 浅金色点缀（参考 ChatGPT 风）
+   ============================================================ */
+:root {
+  /* 背景层级 */
+  --bg-page: #fafaf8;          /* 主背景：极浅暖灰 */
+  --bg-card: #ffffff;          /* 卡片 */
+  --bg-aside: #f7f6f3;         /* 侧边栏 */
+  --bg-hover: rgba(197, 164, 126, 0.08);   /* hover 浅金米色 */
+  --bg-active: rgba(197, 164, 126, 0.16);  /* active 浅金 */
+
+  /* 文字层级 */
+  --text-primary: #2f2f33;
+  --text-secondary: #6e6e80;
+  --text-muted: #b4b4be;
+
+  /* 浅金色系 */
+  --gold: #c5a47e;
+  --gold-deep: #8a7355;
+  --gold-light: #ffe0a6;
+
+  /* 分割线 */
+  --divider: rgba(0, 0, 0, 0.06);
+  --divider-strong: rgba(0, 0, 0, 0.1);
+}
+
+/* Element Plus 主色覆盖：把 primary 改为浅金色 */
+:root {
+  --el-color-primary: #c5a47e;
+  --el-color-primary-light-3: #d4b89a;
+  --el-color-primary-light-5: #e0c8b1;
+  --el-color-primary-light-7: #ecdcc8;
+  --el-color-primary-light-8: #f0e3d3;
+  --el-color-primary-light-9: #faf2e6;
+  --el-color-primary-dark-2: #a68a64;
+
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
+  --el-border-color-light: var(--divider);
+  --el-border-color-lighter: var(--divider);
+  --el-fill-color-blank: var(--bg-card);
+  --el-bg-color: var(--bg-card);
+  --el-bg-color-page: var(--bg-page);
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
+    'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   通用组件淡化：少边框，多分割线
+   ============================================================ */
+
+/* 卡片：去掉边框，用极轻阴影 */
+.el-card {
+  border: none !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  border-radius: 12px !important;
+}
+.el-card__header {
+  border-bottom: 1px solid var(--divider) !important;
+  padding: 14px 18px !important;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.el-card__body {
+  padding: 16px 18px !important;
+}
+
+/* 表格：去重边框，仅保留底部分割线 */
+.el-table,
+.el-table tr,
+.el-table td,
+.el-table th.is-leaf {
+  border-color: var(--divider) !important;
+}
+.el-table::before,
+.el-table--border::after {
+  background-color: var(--divider) !important;
+}
+.el-table th.el-table__cell {
+  background: #faf9f6 !important;
+  color: var(--text-secondary) !important;
+  font-weight: 500;
+}
+.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: #fbfaf7 !important;
+}
+.el-table tbody tr:hover > td.el-table__cell {
+  background: var(--bg-hover) !important;
+}
+
+/* 输入框 / 选择器 / 按钮：让聚焦态走金色 */
+.el-input__wrapper.is-focus,
+.el-textarea__inner:focus,
+.el-select .el-input.is-focus .el-input__wrapper {
+  box-shadow: 0 0 0 1px var(--gold) inset !important;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(197, 164, 126, 0.5);
+}

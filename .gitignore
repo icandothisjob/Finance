@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+
+# 环境变量与密钥
+.env
+*.env
+!*.env.example
+!.env.deploy.example
+
+# Docker 数据卷
+mysql_data/
+
+# IDE
+.idea/
+.vscode/
+
+# 日志
+*.log
