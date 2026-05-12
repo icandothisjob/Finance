@@ -76,7 +76,19 @@ finally {
 
 # ---------- launch ----------
 Write-Step "Starting backend in a new window"
-$backendCmd = "Set-Location '$Backend'; .\.venv\Scripts\Activate.ps1; python run.py"
+# 注意：必须用 venv 的绝对路径调 python.exe，并把 venv\Scripts 顶到 PATH 最前面，
+# 且 PYTHONNOUSERSITE=1，否则 uvicorn --reload 派生的子进程可能被外部
+# Python（例如 conda base 的 python.exe）劫持，加载到旧版本的 openai/httpx，
+# 导致 "Client.__init__() got an unexpected keyword argument 'proxies'" 之类的报错。
+$venvScripts = Join-Path $Backend ".venv\Scripts"
+$venvPy = Join-Path $venvScripts "python.exe"
+$backendCmd = @"
+`$env:Path = '$venvScripts;' + `$env:Path
+`$env:PYTHONNOUSERSITE = '1'
+`$env:VIRTUAL_ENV = '$Backend\.venv'
+Set-Location '$Backend'
+& '$venvPy' run.py
+"@
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $backendCmd | Out-Null
 
 Start-Sleep -Seconds 2

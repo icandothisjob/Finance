@@ -20,8 +20,18 @@ request.interceptors.response.use(
   (response) => response.data,
   (error) => {
     const status = error?.response?.status
-    const detail = error?.response?.data?.detail || error.message || '请求失败'
-    const msg = typeof detail === 'string' ? detail : '请求失败'
+    const data = error?.response?.data
+    let detail = data?.detail
+    // 后端 500 但没有 detail（多半是 ASGI/代理层错误）时，把 status + URL 显式带上
+    if (!detail) {
+      if (status) {
+        const url = error?.config?.url || ''
+        detail = `服务器错误 ${status}（${url}）${error.message ? ' - ' + error.message : ''}`
+      } else {
+        detail = error.message || '请求失败'
+      }
+    }
+    const msg = typeof detail === 'string' ? detail : JSON.stringify(detail)
 
     if (status === 401) {
       clearAuth()
@@ -32,7 +42,7 @@ request.interceptors.response.use(
         window.location.href = `/login?redirect=${redirect}`
       }
     } else {
-      toast.error(msg)
+      toast.error(msg, { duration: 8000 })
     }
     return Promise.reject(error)
   },

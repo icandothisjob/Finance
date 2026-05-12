@@ -123,7 +123,7 @@
           title="刷新后旧二维码立即失效，确定刷新？"
           :icon="null"
           :hide-icon="true"
-          popper-class="regen-qr-popconfirm"
+          popper-class="confirm-inline-popconfirm"
           @confirm="onRegenerate"
         >
           <template #reference>
@@ -841,36 +841,5 @@ watch(
   }
 }
 
-/* ===================== 刷新二维码 确认气泡 ===================== */
-.regen-qr-popconfirm.el-popper {
-  min-width: auto !important;
-  width: auto !important;
-  max-width: none !important;
-  padding: 14px 16px !important;
-  border-radius: 10px !important;
-  border: 1px solid rgba(201, 160, 99, 0.6) !important;
-  box-shadow: 0 12px 32px rgba(94, 74, 46, 0.22),
-    0 2px 8px rgba(94, 74, 46, 0.08) !important;
-}
-.regen-qr-popconfirm .el-popconfirm__main {
-  align-items: center;
-  white-space: nowrap;
-  padding-left: 0 !important;
-  margin-bottom: 10px;
-}
-.regen-qr-popconfirm .el-popconfirm__icon,
-.regen-qr-popconfirm .el-popconfirm__main > .el-icon {
-  display: none !important;
-}
-.regen-qr-popconfirm .el-popconfirm__main .el-popconfirm__icon + * {
-  margin-left: 0 !important;
-}
-.regen-qr-popconfirm .el-popconfirm__action {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-}
-.regen-qr-popconfirm .el-popper__arrow::before {
-  border-color: rgba(201, 160, 99, 0.6) !important;
-}
+/* 刷新二维码确认气泡现已统一为 AssetsTable.vue 中定义的 .confirm-inline-popconfirm */
 </style>

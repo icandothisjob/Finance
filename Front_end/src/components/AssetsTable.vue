@@ -2,7 +2,7 @@
   <div class="assets-table">
     <div class="filter-bar">
       <form class="filter-row" @submit.prevent="onSearch" autocomplete="off">
-        <!-- 左侧：新增 -->
+        <!-- 左侧：新增 / Excel 导入 -->
         <div class="actions-left">
           <el-tooltip content="新增资产" placement="top">
             <button
@@ -13,6 +13,22 @@
             >
               <svg viewBox="0 0 1024 1024" width="22" height="22" aria-hidden="true">
                 <path d="M469.332942 469.332942V298.751751a42.623964 42.623964 0 1 1 85.333262 0V469.332942h170.581192a42.623964 42.623964 0 1 1 0 85.333262H554.666204v170.581192a42.623964 42.623964 0 1 1-85.333262 0V554.666204H298.751751a42.623964 42.623964 0 1 1 0-85.333262H469.332942z m477.866269 312.533073a42.666631 42.666631 0 0 1-72.533273-45.055962A424.959646 424.959646 0 0 0 938.665884 511.999573c0-235.647804-191.018507-426.666311-426.666311-426.666311S85.333262 276.35177 85.333262 511.999573s191.018507 426.666311 426.666311 426.666311a424.447646 424.447646 0 0 0 225.578479-64.426613 42.666631 42.666631 0 0 1 45.183962 72.405273A509.780909 509.780909 0 0 1 511.999573 1023.999147C229.247809 1023.999147 0 794.751338 0 511.999573S229.247809 0 511.999573 0s511.999573 229.247809 511.999574 511.999573a510.719574 510.719574 0 0 1-76.799936 269.866442z"/>
+              </svg>
+            </button>
+          </el-tooltip>
+          <el-tooltip content="Excel 智能导入" placement="top">
+            <button
+              type="button"
+              class="svg-icon-btn import-btn"
+              @click="openImport"
+              aria-label="Excel 智能导入"
+            >
+              <svg viewBox="100 60 824 800" width="22" height="22" aria-hidden="true">
+                <path d="M840.871012 682.73478H609.004445c-19.482868 0-36.629203-17.107413-36.629204-36.670558 0-19.643421 17.147551-36.7557 36.629204-36.7557h231.866567c19.563145 0 36.629203 17.111062 36.629203 36.7557 0 19.561929-17.066059 36.670558-36.629203 36.670558z"/>
+                <path d="M744.340928 562.81747l-109.812199 110.17466c-9.822927 7.325841-19.563145 9.784005-26.808709 9.784005v-0.041355c-9.822927 0-19.565577-2.415593-24.478257-9.781572-14.650465-14.65533-14.650465-36.750834 0-51.406165l109.817064-110.094383c14.650465-14.73439 36.629203-14.73439 51.282101 0 14.651681 14.612759 14.651681 36.669342 0 51.36481z"/>
+                <path d="M744.742311 783.048807c-7.323408 4.951602-17.066059 9.784005-26.888986 9.784005-9.658725 0-19.485301-2.374239-24.314055-9.784005l-109.893692-110.055461c-14.652898-14.694252-14.652898-36.711912 0-51.445087 14.65533-14.612759 36.629203-14.612759 51.204257 0l109.893692 110.135738c14.650465 14.731958 14.650465 36.750834-0.001216 51.36481z"/>
+                <path d="M857.939503 531.057159c-1.448626 0.440305-3.057806 0-4.027206-1.250367-12.880733-16.986998-42.107468-54.785076-56.997546-69.799219-19.969393-20.328204-47.179484-31.821126-75.601021-31.821126a105.885947 105.885947 0 0 0-75.675217 31.821126l-109.836525 110.257369c-14.652898 14.652898-24.433254 34.256181-29.283901 53.819326-2.478842 7.324624-2.478842 14.652898-2.478842 21.979954 0 7.325841 0 14.611543 2.478842 22.020093 4.850648 19.563145 14.631004 39.12629 29.283901 53.818109l107.419716 110.135738c21.978738 22.020093 46.374286 31.801665 75.677649 31.801665 28.419105-0.121631 55.551352-11.553737 75.596156-31.801665 16.667109-14.812234 44.523061-52.131086 57.081471-69.357698a3.421483 3.421483 0 0 1 3.945713-1.247935c1.448626 0.442737 2.415593 1.811087 2.415593 3.381345 0 55.794614-45.487596 101.481685-101.200717 101.481685H339.26074c-55.65109 0-101.220178-45.687071-101.220179-101.481685V277.614453c0-55.852997 45.569089-101.481685 101.220179-101.481685h419.893639c55.629196 0 101.198285 45.627472 101.198285 101.481685v250.060146c0 1.488765-0.966967 2.896036-2.413161 3.38256z"/>
+                <path d="M297.777239 132.444096c-56.114504 0-102.487574 46.514162-102.487574 102.80868v518.839317c0 7.406117 0 14.69182 2.454515 24.474608C166.003331 761.499426 146.499785 729.619917 146.499785 692.94571V196.068104c0-53.842435 43.916122-97.880189 97.616249-97.880189h424.706582c29.22187 0 56.114504 14.69182 73.180563 34.256181H297.777239z"/>
               </svg>
             </button>
           </el-tooltip>
@@ -145,7 +161,7 @@
                 title="确定删除该资产？"
                 :icon="null"
                 :hide-icon="true"
-                popper-class="delete-asset-popconfirm"
+                popper-class="confirm-inline-popconfirm"
                 @confirm="onDelete(row)"
               >
                 <template #reference>
@@ -187,6 +203,11 @@
     </el-card>
 
     <AssetQrDialog v-model="qrVisible" :asset="qrAsset" />
+
+    <AssetImportDialog
+      v-model="importVisible"
+      @imported="onImported"
+    />
 
     <el-dialog
       v-model="dialogVisible"
@@ -243,15 +264,12 @@
               <el-form-item label="资产编号" prop="asset_code">
                 <el-input
                   v-model="form.asset_code"
-                  placeholder="留空将自动生成"
-                  :disabled="editing"
+                  :placeholder="editing ? '' : (form.asset_class ? '生成中…' : '请先选择资产大类')"
+                  disabled
+                  class="asset-code-input"
                 >
-                  <template #append>
-                    <el-button
-                      :loading="genLoading"
-                      :disabled="editing || !form.asset_class"
-                      @click="onGenerateCode"
-                    >自动生成</el-button>
+                  <template v-if="!editing && genLoading" #suffix>
+                    <el-icon class="is-loading"><Loading /></el-icon>
                   </template>
                 </el-input>
               </el-form-item>
@@ -501,6 +519,9 @@
                           </el-tooltip>
                           <el-popconfirm
                             :title="f._pending ? '确定移除该文件？' : '确定删除该附件？'"
+                            :icon="null"
+                            :hide-icon="true"
+                            popper-class="confirm-inline-popconfirm"
                             @confirm="onRemoveFile(f)"
                           >
                             <template #reference>
@@ -543,7 +564,8 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue'
+import { Loading } from '@element-plus/icons-vue'
 import { toast } from '../utils/toast'
 import {
   listAssets,
@@ -557,6 +579,7 @@ import {
   deleteAssetFile,
 } from '../api/assets'
 import AssetQrDialog from './AssetQrDialog.vue'
+import AssetImportDialog from './AssetImportDialog.vue'
 const emit = defineEmits(['change'])
 
 const list = ref([])
@@ -644,25 +667,25 @@ const editing = ref(null)
 const formRef = ref()
 const saving = ref(false)
 const genLoading = ref(false)
-const fileList = ref([])         // 编辑模式：服务端已存的附件（含 id/file_url 等）
-const pendingFiles = ref([])     // 新增模式：暂存待上传的本地文件 { tempId, raw, filename, size, created_at }
+const fileList = ref([])         // 编辑模式：服务端已存的、当前还在的附件
+const pendingFiles = ref([])     // 待上传（新增/编辑都用）：{ tempId, raw, filename, size, created_at }
+const pendingDeletes = ref([])   // 编辑模式下被用户点 X 但尚未保存的已有附件：{ id, filename }
 const uploading = ref(false)
 
 const MAX_FILE_MB = 50
 
-// 视图层统一展示：编辑模式用 fileList，新增模式用 pendingFiles
-const displayFiles = computed(() =>
-  editing.value
-    ? fileList.value
-    : pendingFiles.value.map((f) => ({
-        id: f.tempId,
-        filename: f.filename,
-        size: f.size,
-        created_at: f.created_at,
-        file_url: '',          // 暂存阶段无 URL
-        _pending: true,
-      })),
-)
+// 视图层统一展示：先展示「待上传」（新加的浮在最上面），再展示已存在的真实附件
+const displayFiles = computed(() => {
+  const pending = pendingFiles.value.map((f) => ({
+    id: f.tempId,
+    filename: f.filename,
+    size: f.size,
+    created_at: f.created_at,
+    file_url: '',
+    _pending: true,
+  }))
+  return editing.value ? [...pending, ...fileList.value] : pending
+})
 
 function humanSize(bytes) {
   if (!bytes && bytes !== 0) return '—'
@@ -714,19 +737,7 @@ async function onPickFile(uploadFile) {
     toast.error(`文件过大，单文件最大 ${MAX_FILE_MB} MB`)
     return
   }
-  // 编辑模式：直接上传到 COS
-  if (editing.value) {
-    uploading.value = true
-    try {
-      const created = await uploadAssetFile(editing.value.id, raw)
-      fileList.value.unshift(created)
-      toast.success(`已上传：${created.filename}`)
-    } finally {
-      uploading.value = false
-    }
-    return
-  }
-  // 新增模式：暂存到内存，等创建资产成功后统一上传
+  // 新增 / 编辑模式都一律暂存到内存，等点击「保存修改 / 确定新增」后再统一上传到 COS
   pendingFiles.value.unshift({
     tempId: `tmp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     raw,
@@ -738,12 +749,20 @@ async function onPickFile(uploadFile) {
 }
 
 async function onRemoveFile(f) {
-  // 暂存文件：直接从内存移除
+  // 待上传的暂存文件：直接从内存移除（还没传到 COS）
   if (f._pending) {
     pendingFiles.value = pendingFiles.value.filter((x) => x.tempId !== f.id)
     toast.success('已移除')
     return
   }
+  // 已存在的真实附件：编辑模式下只标记待删除，等点击保存才真正调 COS 删除
+  if (editing.value) {
+    pendingDeletes.value.push({ id: f.id, filename: f.filename })
+    fileList.value = fileList.value.filter((x) => x.id !== f.id)
+    toast.info(`已标记删除：${f.filename}（保存后生效）`)
+    return
+  }
+  // 兜底（理论上不会进到这个分支）
   await deleteAssetFile(editing.value.id, f.id)
   fileList.value = fileList.value.filter((x) => x.id !== f.id)
   toast.success('附件已删除')
@@ -795,6 +814,7 @@ function openCreate() {
   resetForm()
   fileList.value = []
   pendingFiles.value = []
+  pendingDeletes.value = []
   dialogVisible.value = true
   nextTick(() => formRef.value?.clearValidate())
 }
@@ -803,6 +823,7 @@ function openEdit(row) {
   editing.value = row
   fileList.value = []
   pendingFiles.value = []
+  pendingDeletes.value = []
   loadFiles()
   Object.assign(form, {
     asset_code: row.asset_code,
@@ -827,16 +848,18 @@ function openEdit(row) {
 }
 
 function onClassChange() {
-  if (!editing.value) {
-    form.asset_code = ''
-  }
-}
-
-async function onGenerateCode() {
+  if (editing.value) return
+  // 大类清空 → 编号也清空；否则自动重新生成
   if (!form.asset_class) {
-    toast.warning('请先选择资产大类')
+    form.asset_code = ''
     return
   }
+  regenerateCode()
+}
+
+// 自动预览下一个编号；失败 / 没大类时静默不打扰用户
+async function regenerateCode() {
+  if (editing.value || !form.asset_class) return
   genLoading.value = true
   try {
     const params = { asset_class: form.asset_class }
@@ -846,11 +869,22 @@ async function onGenerateCode() {
     }
     const res = await previewNextCode(params)
     form.asset_code = res.code
-    toast.success(`已生成编号：${res.code}`)
+  } catch {
+    /* 错误已由 request.js 提示 */
   } finally {
     genLoading.value = false
   }
 }
+
+// 购置日期变化时，新增模式下重新生成一次（年份段会跟着变）
+watch(
+  () => form.purchase_date,
+  () => {
+    if (!editing.value && form.asset_class) {
+      regenerateCode()
+    }
+  },
+)
 
 async function onSubmit() {
   await formRef.value?.validate()
@@ -863,38 +897,68 @@ async function onSubmit() {
     if (editing.value) {
       const { asset_code, ...rest } = payload
       await updateAsset(editing.value.id, rest)
-      toast.success('更新成功')
+      await syncAttachments(editing.value.id, '更新成功')
     } else {
       const created = await createAsset(payload)
-      toast.success(`新增成功，编号：${created.asset_code}`)
-      // 新增模式：上传暂存的附件
-      if (pendingFiles.value.length) {
-        const total = pendingFiles.value.length
-        let ok = 0
-        let fail = 0
-        for (const f of pendingFiles.value) {
-          try {
-            await uploadAssetFile(created.id, f.raw)
-            ok++
-          } catch {
-            fail++
-          }
-        }
-        if (fail === 0) {
-          toast.success(`已上传 ${ok} 个附件`)
-        } else if (ok === 0) {
-          toast.error(`附件全部上传失败（共 ${total} 个）`)
-        } else {
-          toast.warning(`附件上传完成：成功 ${ok}，失败 ${fail}`)
-        }
-        pendingFiles.value = []
-      }
+      await syncAttachments(created.id, `新增成功，编号：${created.asset_code}`)
     }
     dialogVisible.value = false
     loadList()
     emit('change')
   } finally {
     saving.value = false
+  }
+}
+
+/**
+ * 把当前 pendingFiles（待上传）/ pendingDeletes（待删除）一次性同步到 COS，
+ * 调用方传入 assetId 以及主操作（创建 / 更新）的成功文案，组合成一条 toast。
+ */
+async function syncAttachments(assetId, mainOkMsg) {
+  const dels = pendingDeletes.value
+  const ups = pendingFiles.value
+
+  let delOk = 0
+  let delFail = 0
+  let upOk = 0
+  let upFail = 0
+
+  for (const d of dels) {
+    try {
+      await deleteAssetFile(assetId, d.id)
+      delOk++
+    } catch {
+      delFail++
+    }
+  }
+  for (const f of ups) {
+    try {
+      await uploadAssetFile(assetId, f.raw)
+      upOk++
+    } catch {
+      upFail++
+    }
+  }
+
+  pendingDeletes.value = []
+  pendingFiles.value = []
+
+  const parts = [mainOkMsg]
+  if (upOk) parts.push(`上传 ${upOk} 个附件`)
+  if (delOk) parts.push(`删除 ${delOk} 个附件`)
+
+  const hasFail = upFail || delFail
+  if (!hasFail) {
+    toast.success(parts.join('，'))
+    return
+  }
+
+  if (upFail) parts.push(`${upFail} 个附件上传失败`)
+  if (delFail) parts.push(`${delFail} 个附件删除失败`)
+  if (upOk + delOk === 0) {
+    toast.error(parts.join('，'))
+  } else {
+    toast.warning(parts.join('，'))
   }
 }
 
@@ -910,6 +974,15 @@ const qrAsset = ref(null)
 function openQr(row) {
   qrAsset.value = row
   qrVisible.value = true
+}
+
+const importVisible = ref(false)
+function openImport() {
+  importVisible.value = true
+}
+function onImported() {
+  loadList()
+  emit('change')
 }
 
 defineExpose({ loadList })
@@ -1233,18 +1306,40 @@ onMounted(() => {
   filter: brightness(1.05) saturate(1.1);
 }
 
-/* 查询 / 重置 / 新增资产：无背景，金棕色 */
+/* 查询 / 重置 / 新增资产 / Excel 导入：无背景，金棕色 */
 .svg-icon-btn.search-btn,
 .svg-icon-btn.reset-btn,
-.svg-icon-btn.add-btn {
+.svg-icon-btn.add-btn,
+.svg-icon-btn.import-btn {
   padding: 6px;
 }
 .svg-icon-btn.search-btn svg,
 .svg-icon-btn.reset-btn svg,
-.svg-icon-btn.add-btn svg { fill: #8a7355; }
+.svg-icon-btn.add-btn svg,
+.svg-icon-btn.import-btn svg { fill: #8a7355; }
 .svg-icon-btn.search-btn:hover svg,
 .svg-icon-btn.reset-btn:hover svg,
-.svg-icon-btn.add-btn:hover svg { fill: #6e5a40; }
+.svg-icon-btn.add-btn:hover svg,
+.svg-icon-btn.import-btn:hover svg { fill: #6e5a40; }
+.svg-icon-btn.import-btn svg {
+  transform: translateY(-1px);
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: import-btn-breath 3.6s ease-in-out infinite;
+  will-change: transform;
+}
+.svg-icon-btn.import-btn:hover svg {
+  transform: translateY(-1px) scale(1.18) translateX(2px);
+  animation: none;
+}
+.svg-icon-btn.import-btn:active svg {
+  transform: translateY(-1px) scale(0.92);
+  transition-duration: 0.1s;
+  animation: none;
+}
+@keyframes import-btn-breath {
+  0%, 100% { transform: translateY(-1px) translateX(0); }
+  50%       { transform: translateY(-1px) translateX(1.5px); }
+}
 .svg-icon-btn.reset-btn svg { transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
 .svg-icon-btn.reset-btn:hover svg { transform: rotate(-180deg); }
 .svg-icon-btn.add-btn svg { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -1854,6 +1949,9 @@ onMounted(() => {
 </style>
 
 <style>
+/* ===== 通用确认弹窗（删除资产 / 删除附件 / 移除文件 等单行确认） ===== */
+/* 同时保留 .delete-asset-popconfirm 作为历史别名，避免破坏外部引用 */
+.confirm-inline-popconfirm.el-popper,
 .delete-asset-popconfirm.el-popper {
   min-width: auto !important;
   width: auto !important;
@@ -1864,24 +1962,30 @@ onMounted(() => {
   box-shadow: 0 12px 32px rgba(94, 74, 46, 0.22),
     0 2px 8px rgba(94, 74, 46, 0.08) !important;
 }
+.confirm-inline-popconfirm .el-popconfirm__main,
 .delete-asset-popconfirm .el-popconfirm__main {
   align-items: center;
   white-space: nowrap;
   padding-left: 0 !important;
   margin-bottom: 10px;
 }
+.confirm-inline-popconfirm .el-popconfirm__icon,
+.confirm-inline-popconfirm .el-popconfirm__main > .el-icon,
 .delete-asset-popconfirm .el-popconfirm__icon,
 .delete-asset-popconfirm .el-popconfirm__main > .el-icon {
   display: none !important;
 }
+.confirm-inline-popconfirm .el-popconfirm__main .el-popconfirm__icon + *,
 .delete-asset-popconfirm .el-popconfirm__main .el-popconfirm__icon + * {
   margin-left: 0 !important;
 }
+.confirm-inline-popconfirm .el-popconfirm__action,
 .delete-asset-popconfirm .el-popconfirm__action {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
 }
+.confirm-inline-popconfirm .el-popper__arrow::before,
 .delete-asset-popconfirm .el-popper__arrow::before {
   border-color: rgba(201, 160, 99, 0.6) !important;
 }

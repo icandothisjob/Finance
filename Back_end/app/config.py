@@ -57,6 +57,18 @@ class Settings(BaseSettings):
         default=50, description="单个文件最大大小（MB）"
     )
 
+    dashscope_api_key: str = Field(default="", description="百炼 API Key")
+    dashscope_base_url: str = Field(
+        default="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        description="百炼 OpenAI 兼容接口 Base URL",
+    )
+    dashscope_model: str = Field(
+        default="qwen-plus", description="使用的百炼模型名称"
+    )
+    import_max_rows: int = Field(
+        default=500, description="单次 Excel 导入最大行数"
+    )
+
     @property
     def database_url(self) -> str:
         return (

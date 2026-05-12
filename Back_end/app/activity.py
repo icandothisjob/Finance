@@ -46,6 +46,7 @@ ACTION_LABELS: dict[str, str] = {
     "asset.create": "新增资产",
     "asset.update": "修改资产",
     "asset.delete": "删除资产",
+    "asset.import": "批量导入资产",
     "asset.qr.regen": "刷新二维码",
     "file.upload": "上传附件",
     "file.delete": "删除附件",

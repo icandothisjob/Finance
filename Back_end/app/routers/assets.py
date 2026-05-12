@@ -1,13 +1,19 @@
 """资产管理 API 路由。"""
+import json
+import logging
 import re
+import traceback
 import uuid
 from datetime import datetime
 from typing import List, Optional
+
+logger = logging.getLogger(__name__)
 
 from fastapi import (
     APIRouter,
     Depends,
     File,
+    Form,
     HTTPException,
     Query,
     Request,
@@ -19,9 +25,10 @@ from sqlalchemy.orm import Session
 
 from .. import activity
 from .. import asset_code as code_util
-from .. import cos_client, crud, models, schemas
+from .. import cos_client, crud, excel_import, models, schemas
 from ..config import get_settings
 from ..database import get_db
+from ..llm_client import LLMUnavailable, is_configured as llm_is_configured
 from ..qrcode_util import make_qr_png
 from ..security import get_current_user
 
@@ -359,6 +366,301 @@ async def upload_file(
         request=request,
     )
     return record
+
+
+# ============ Excel 批量导入（AI 智能映射） ============
+
+@router.post(
+    "/import/parse",
+    response_model=schemas.ImportParseOut,
+    summary="解析 Excel / CSV，返回 AI 推断的列映射与规范化后的数据预览",
+)
+async def import_parse(
+    file: UploadFile = File(..., description="待导入的 .xlsx / .xls / .csv 文件"),
+    mapping: Optional[str] = Form(
+        default=None,
+        description="可选：用户在前一步手动调整后的 mapping JSON 字符串，"
+                    "传入后跳过 AI 调用，直接按此映射规范化",
+    ),
+    header_row: Optional[int] = Form(
+        default=None,
+        description="可选：1-based 表头所在行号；不传则由后端自动检测",
+    ),
+    db: Session = Depends(get_db),
+):
+    try:
+        return await _import_parse_impl(file, mapping, header_row, db)
+    except HTTPException:
+        raise
+    except Exception as e:  # noqa: BLE001
+        tb = traceback.format_exc()
+        print("[import_parse] 未捕获异常:\n" + tb, flush=True)
+        logger.error("import_parse failed: %s\n%s", e, tb)
+        raise HTTPException(
+            status_code=500,
+            detail=f"导入解析失败（{type(e).__name__}）：{e}",
+        ) from e
+
+
+async def _import_parse_impl(
+    file: UploadFile,
+    mapping: Optional[str],
+    header_row: Optional[int],
+    db: Session,
+):
+    settings = get_settings()
+    max_bytes = settings.upload_max_size_mb * 1024 * 1024
+    content = await file.read()
+    if not content:
+        raise HTTPException(status_code=400, detail="文件为空")
+    if len(content) > max_bytes:
+        raise HTTPException(
+            status_code=400,
+            detail=f"文件过大，单文件最大 {settings.upload_max_size_mb} MB",
+        )
+
+    name = (file.filename or "").lower()
+    if name.endswith(".xls") and not name.endswith(".xlsx"):
+        raise HTTPException(
+            status_code=400,
+            detail="不支持旧版 .xls 格式，请先用 Excel 另存为 .xlsx 后再上传",
+        )
+    if not (name.endswith(".xlsx") or name.endswith(".csv")):
+        raise HTTPException(
+            status_code=400, detail="仅支持 .xlsx / .csv 文件"
+        )
+
+    try:
+        headers, raw_rows, header_row_used = excel_import.parse_workbook(
+            content, file.filename or "", header_row=header_row
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(
+            status_code=400, detail=f"文件解析失败：{e}"
+        ) from e
+
+    # 顶部预览失败不影响主流程
+    try:
+        top_preview = excel_import.preview_top_rows(content, file.filename or "")
+    except Exception:  # noqa: BLE001
+        top_preview = []
+
+    if not headers:
+        raise HTTPException(
+            status_code=400,
+            detail="未识别到表头，请确认文件首部是否包含列名行；"
+                   "如顶部有标题/说明行，可在前端切换表头行后重试",
+        )
+
+    user_mapping: Optional[dict] = None
+    if mapping:
+        try:
+            user_mapping = json.loads(mapping)
+            if not isinstance(user_mapping, dict):
+                raise ValueError("mapping 不是 JSON 对象")
+        except (ValueError, TypeError) as e:
+            raise HTTPException(
+                status_code=400, detail=f"mapping 参数无法解析为 JSON：{e}"
+            ) from e
+
+    if user_mapping is not None:
+        cleaned: dict = {}
+        for h in headers:
+            v = user_mapping.get(h)
+            cleaned[h] = v if (isinstance(v, str) and v) else None
+        mapping_out = cleaned
+        llm_used = False
+    else:
+        samples = raw_rows[:5]
+        mapping_out, llm_used = excel_import.resolve_mapping(headers, samples)
+
+    rows_out: List[dict] = []
+    error_count = 0
+    warning_count = 0
+    for idx, raw in enumerate(raw_rows, start=1):
+        data, issues = excel_import.normalize_row(raw, mapping_out)
+        has_error = any(i["level"] == "error" for i in issues)
+        has_warn = any(i["level"] == "warning" for i in issues)
+        if has_error:
+            error_count += 1
+        if has_warn:
+            warning_count += 1
+        rows_out.append(
+            {
+                "row_index": idx,
+                "data": data,
+                "issues": issues,
+            }
+        )
+
+    field_dict = excel_import.get_field_dict()
+    return {
+        "headers": headers,
+        "mapping": mapping_out,
+        "rows": rows_out,
+        "total": len(rows_out),
+        "error_count": error_count,
+        "warning_count": warning_count,
+        "llm_used": llm_used,
+        "header_row": header_row_used,
+        "header_auto_detected": header_row is None,
+        "top_rows_preview": top_preview,
+        "field_dict": [{"key": k, "label": v} for k, v in field_dict.items()],
+    }
+
+
+@router.post(
+    "/import/ai-fill",
+    response_model=schemas.ImportAiFillOut,
+    summary="AI 一键补全：参考系统已有资产风格，补全选中行的缺失字段",
+)
+def import_ai_fill(
+    payload: schemas.ImportAiFillIn,
+    db: Session = Depends(get_db),
+):
+    if not payload.rows:
+        raise HTTPException(status_code=400, detail="没有需要补全的行")
+    if not llm_is_configured():
+        raise HTTPException(
+            status_code=400,
+            detail="后端未配置百炼 API Key，无法使用 AI 补全。"
+                   "请先在 Back_end/.env 中设置 DASHSCOPE_API_KEY 后重启服务。",
+        )
+
+    # 取最近的若干条资产作为「前置资产样本」，供 LLM 参考风格
+    _, recent_assets = crud.list_assets(db, page=1, page_size=30)
+    reference_assets = [
+        excel_import.asset_to_reference(a) for a in recent_assets
+    ]
+    reference_assets = [r for r in reference_assets if r]
+
+    input_rows = [
+        {"row_index": r.row_index, "data": dict(r.data or {})}
+        for r in payload.rows
+    ]
+
+    try:
+        new_rows, err_count, warn_count = excel_import.apply_ai_fill(
+            input_rows,
+            reference_assets,
+            only_missing=payload.only_missing,
+        )
+    except LLMUnavailable as e:
+        raise HTTPException(
+            status_code=502,
+            detail=f"AI 补全失败：{e}",
+        ) from e
+    except Exception as e:  # noqa: BLE001
+        tb = traceback.format_exc()
+        print("[import_ai_fill] 未捕获异常:\n" + tb, flush=True)
+        logger.error("import_ai_fill failed: %s\n%s", e, tb)
+        raise HTTPException(
+            status_code=500,
+            detail=f"AI 补全异常（{type(e).__name__}）：{e}",
+        ) from e
+
+    return {
+        "rows": new_rows,
+        "error_count": err_count,
+        "warning_count": warn_count,
+        "used_samples": len(reference_assets),
+        "llm_used": True,
+    }
+
+
+@router.post(
+    "/import/commit",
+    response_model=schemas.ImportCommitOut,
+    summary="批量入库（接收预览阶段确认后的资产数据）",
+)
+def import_commit(
+    payload: schemas.ImportCommitIn,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    try:
+        return _import_commit_impl(payload, request, db, current_user)
+    except HTTPException:
+        raise
+    except Exception as e:  # noqa: BLE001
+        tb = traceback.format_exc()
+        print("[import_commit] 未捕获异常:\n" + tb, flush=True)
+        logger.error("import_commit failed: %s\n%s", e, tb)
+        raise HTTPException(
+            status_code=500,
+            detail=f"批量导入失败（{type(e).__name__}）：{e}",
+        ) from e
+
+
+def _import_commit_impl(
+    payload: schemas.ImportCommitIn,
+    request: Request,
+    db: Session,
+    current_user: models.User,
+):
+    settings = get_settings()
+    rows = payload.rows
+    if not rows:
+        raise HTTPException(status_code=400, detail="没有可导入的数据")
+    if len(rows) > settings.import_max_rows:
+        raise HTTPException(
+            status_code=400,
+            detail=f"单次导入不能超过 {settings.import_max_rows} 行",
+        )
+
+    success_codes: List[str] = []
+    failures: List[dict] = []
+    for idx, item in enumerate(rows):
+        # 批量导入时强制忽略 Excel 中的资产编号，统一由平台按
+        # 「机构-大类-年份-流水」规则自动生成，避免外部编号与系统冲突 / 重复。
+        item.asset_code = None
+        try:
+            asset = crud.create_asset(db, item)
+            success_codes.append(asset.asset_code)
+        except HTTPException as e:
+            failures.append(
+                {
+                    "index": idx,
+                    "asset_code": None,
+                    "error": str(e.detail),
+                }
+            )
+        except Exception as e:  # noqa: BLE001
+            failures.append(
+                {
+                    "index": idx,
+                    "asset_code": None,
+                    "error": str(e),
+                }
+            )
+
+    total = len(rows)
+    success = len(success_codes)
+    failed = len(failures)
+    activity.log(
+        db,
+        action="asset.import",
+        actor=current_user,
+        target_type="asset",
+        target_label=f"共 {total} 条",
+        summary=f"批量导入资产：成功 {success} 条 / 失败 {failed} 条",
+        extra={
+            "total": total,
+            "success": success,
+            "failed": failed,
+            "success_codes": success_codes[:50],
+            "failures": failures[:50],
+        },
+        request=request,
+    )
+    return {
+        "success": success,
+        "failed": failed,
+        "failures": failures,
+    }
 
 
 @router.delete(

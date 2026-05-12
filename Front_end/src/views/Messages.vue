@@ -275,6 +275,7 @@ import { toast } from '../utils/toast'
 import imgAssetCreate from '../img/新增资产.png'
 import imgAssetUpdate from '../img/修改资产.png'
 import imgAssetDelete from '../img/删除资产.png'
+import imgAssetImport from '../img/批量上传.png'
 import imgQrRegen from '../img/二维码刷新.png'
 import imgFileUpload from '../img/上传文件.png'
 import imgFileDelete from '../img/删除文件.png'
@@ -285,6 +286,7 @@ const ACTION_IMAGE_MAP = {
   'asset.create': imgAssetCreate,
   'asset.update': imgAssetUpdate,
   'asset.delete': imgAssetDelete,
+  'asset.import': imgAssetImport,
   'asset.qr.regen': imgQrRegen,
   'file.upload': imgFileUpload,
   'file.delete': imgFileDelete,
@@ -312,6 +314,7 @@ const actionOptions = [
   { value: 'asset.create', label: '新增资产' },
   { value: 'asset.update', label: '修改资产' },
   { value: 'asset.delete', label: '删除资产' },
+  { value: 'asset.import', label: '批量导入' },
   { value: 'asset.qr.regen', label: '二维码刷新' },
   { value: 'file.upload', label: '上传附件' },
   { value: 'file.delete', label: '删除附件' },
@@ -413,6 +416,15 @@ const ACTION_ICON_MAP = {
       '<g transform="translate(13.5 12)">' +
         '<circle cx="5" cy="5" r="5.2" fill="#fff"/>' +
         '<path stroke="#c44545" stroke-width="1.6" stroke-linecap="round" d="M3 3l4 4M7 3l-4 4"/>' +
+      '</g>' +
+    '</svg>',
+  // 批量导入：纸箱 + 向下箭头角标（表示从外部一次导入很多）
+  'asset.import':
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">' +
+      '<path fill="currentColor" d="M21 8.5L12 4 3 8.5v7L12 20l9-4.5v-7zM12 6.18L18.18 9 12 12.06 5.82 9 12 6.18zM5 10.62l6 2.97v6.16l-6-3v-6.13zm14 6.13l-6 3v-6.16l6-2.97v6.13z" opacity="0.6"/>' +
+      '<g transform="translate(13 11.5)">' +
+        '<circle cx="5" cy="5" r="5.2" fill="#fff"/>' +
+        '<path fill="none" stroke="#5a8dc5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M5 2v5M2.7 5L5 7.3 7.3 5M2.3 8.3h5.4"/>' +
       '</g>' +
     '</svg>',
   // 二维码刷新：二维码 + 旋转箭头

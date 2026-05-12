@@ -62,3 +62,31 @@ export function deleteAssetFile(assetId, fileId) {
   return request.delete(`/api/assets/${assetId}/files/${fileId}`)
 }
 
+export function parseImportExcel(file, mapping, headerRow) {
+  const fd = new FormData()
+  fd.append('file', file)
+  if (mapping && typeof mapping === 'object') {
+    fd.append('mapping', JSON.stringify(mapping))
+  }
+  if (headerRow != null && Number.isFinite(Number(headerRow))) {
+    fd.append('header_row', String(headerRow))
+  }
+  return request.post('/api/assets/import/parse', fd, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 5 * 60 * 1000,
+  })
+}
+
+export function commitImport(rows) {
+  return request.post('/api/assets/import/commit', { rows })
+}
+
+export function aiFillImport(rows, onlyMissing = true) {
+  return request.post('/api/assets/import/ai-fill', {
+    rows,
+    only_missing: onlyMissing,
+  }, {
+    timeout: 2 * 60 * 1000,
+  })
+}
+
