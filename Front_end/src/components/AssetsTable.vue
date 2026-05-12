@@ -110,7 +110,7 @@
           <template #default="{ row }">{{ fmtDate(row.purchase_date) }}</template>
         </el-table-column>
         <el-table-column prop="supplier" label="供应商" width="120" show-overflow-tooltip />
-        <el-table-column prop="price" label="金额" width="100" align="right">
+        <el-table-column prop="price" label="金额" width="100" align="left">
           <template #default="{ row }">
             {{ row.price != null ? `¥ ${Number(row.price).toFixed(2)}` : '—' }}
           </template>
