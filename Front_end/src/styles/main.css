@@ -1088,8 +1088,8 @@ html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table-fixe
 html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table-fixed-column--right,
 html.dark .dashboard .assets-table .gold-table .el-table__fixed tbody tr:hover > td.el-table__cell,
 html.dark .dashboard .assets-table .gold-table .el-table__fixed-right tbody tr:hover > td.el-table__cell {
-  background: var(--theme-surface-muted) !important;
-  background-color: var(--theme-surface-muted) !important;
+  background: var(--bg-hover) !important;
+  background-color: var(--bg-hover) !important;
 }
 
 html.dark .el-table,
