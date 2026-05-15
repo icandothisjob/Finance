@@ -1064,6 +1064,8 @@ html.dark .dashboard .assets-table .gold-table .el-table__header-wrapper,
 html.dark .dashboard .assets-table .gold-table .el-table__body-wrapper,
 html.dark .dashboard .assets-table .gold-table .el-scrollbar,
 html.dark .dashboard .assets-table .gold-table .el-scrollbar__view {
+  --asset-table-hover-bg: var(--theme-surface-muted);
+  --asset-table-hover-bg: color-mix(in srgb, var(--bg-page) 84%, rgb(var(--theme-primary-rgb)) 16%);
   background: var(--bg-page) !important;
 }
 html.dark .dashboard .assets-table .gold-table tr,
@@ -1074,8 +1076,8 @@ html.dark .dashboard .assets-table .gold-table.el-table--striped .el-table__body
   background-color: var(--bg-page) !important;
 }
 html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table__cell {
-  background: var(--bg-hover) !important;
-  background-color: var(--bg-hover) !important;
+  background: var(--asset-table-hover-bg) !important;
+  background-color: var(--asset-table-hover-bg) !important;
 }
 html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--left,
 html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--right,
@@ -1088,8 +1090,12 @@ html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table-fixe
 html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table-fixed-column--right,
 html.dark .dashboard .assets-table .gold-table .el-table__fixed tbody tr:hover > td.el-table__cell,
 html.dark .dashboard .assets-table .gold-table .el-table__fixed-right tbody tr:hover > td.el-table__cell {
-  background: var(--bg-hover) !important;
-  background-color: var(--bg-hover) !important;
+  background: var(--asset-table-hover-bg) !important;
+  background-color: var(--asset-table-hover-bg) !important;
+}
+html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--left::before,
+html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--right::before {
+  background: inherit !important;
 }
 
 html.dark .el-table,
