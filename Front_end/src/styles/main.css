@@ -1095,7 +1095,8 @@ html.dark .dashboard .assets-table .gold-table .el-table__fixed-right tbody tr:h
 }
 html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--left::before,
 html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--right::before {
-  background: inherit !important;
+  background: transparent !important;
+  pointer-events: none;
 }
 
 html.dark .el-table,

@@ -93,7 +93,7 @@
         :header-cell-class-name="() => 'gold-header-cell'"
       >
         <el-table-column prop="asset_code" label="资产编号" width="200" fixed="left" />
-        <el-table-column prop="asset_class" label="大类" width="80">
+        <el-table-column prop="asset_class" label="大类" width="90">
           <template #default="{ row }">
             <span class="class-badge" :data-class="row.asset_class">
               <span class="class-badge__dot"></span>
