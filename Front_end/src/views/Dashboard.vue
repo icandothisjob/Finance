@@ -19,7 +19,7 @@ import AssetsTable from '../components/AssetsTable.vue'
   letter-spacing: 0.3px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #ffffff;
+  background: var(--bg-card, #ffffff);
   margin: -20px -24px;
   padding: 20px 24px;
   min-height: calc(100% + 40px);

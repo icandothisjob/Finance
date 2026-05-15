@@ -84,10 +84,10 @@
     </div>
 
     <el-card shadow="never" class="table-card">
+      <div class="table-band">
       <el-table
         :data="list"
         v-loading="loading"
-        stripe
         size="small"
         class="gold-table"
         :header-cell-class-name="() => 'gold-header-cell'"
@@ -178,7 +178,7 @@
                       <path d="M859.8528 182.8864h-260.352c-3.1744-42.24-38.4-75.52-81.408-75.52h-12.1856c-43.008 0-78.2336 33.28-81.408 75.52H164.1472c-14.3872 0-26.0608 11.6736-26.0608 26.112 0 14.3872 11.6736 26.112 26.0608 26.112h695.7568c14.3872 0 26.0608-11.6736 26.0608-26.112 0-14.3872-11.6736-26.112-26.112-26.112z" fill="#FC4C66"/>
                       <path d="M845.2608 193.8432h-279.04a50.5344 50.5344 0 0 0-50.432-46.7456h-7.5776c-26.6752 0-48.4864 20.6336-50.432 46.7456h-279.04a16.1792 16.1792 0 0 0 0 32.3584h666.5216a16.1792 16.1792 0 0 0 0-32.3584z" fill="#FF5F7E"/>
                       <path d="M336.9984 519.168c-37.4784 0-67.9424 30.464-67.9424 67.9424v166.3488c0 37.4784 30.464 67.9424 67.9424 67.9424 37.4784 0 67.9424-30.464 67.9424-67.9424v-166.3488c0-37.4272-30.5152-67.9424-67.9424-67.9424zM684.6976 519.168c-37.4784 0-67.9424 30.464-67.9424 67.9424v166.3488c0 37.4784 30.464 67.9424 67.9424 67.9424 37.4784 0 67.9424-30.464 67.9424-67.9424v-166.3488c-0.0512-37.4272-30.5152-67.9424-67.9424-67.9424zM510.8224 412.1088c-37.4784 0-67.9424 30.464-67.9424 67.9424v273.408c0 37.4784 30.464 67.9424 67.9424 67.9424 37.4784 0 67.9424-30.464 67.9424-67.9424v-273.408c0-37.4784-30.464-67.9424-67.9424-67.9424z" fill="#F92B5C"/>
-                      <path d="M336.9984 800.3072c-25.856 0-46.848-20.992-46.848-46.848v-166.3488c0-25.856 20.992-46.848 46.848-46.848 25.856 0 46.848 20.992 46.848 46.848v166.3488c0 25.856-20.992 46.848-46.848 46.848zM684.6976 800.3072c-25.856 0-46.848-20.992-46.848-46.848v-166.3488c0-25.856 20.992-46.848 46.848-46.848 25.856 0 46.848 20.992 46.848 46.848v166.3488c0 25.856-20.992 46.848-46.848 46.848zM510.8224 800.3072c-25.856 0-46.848-20.992-46.848-46.848v-273.408c0-25.856 20.992-46.848 46.848-46.848 25.856 0 46.848 20.992 46.848 46.848v273.408c0 25.856-20.9408 46.848-46.848 46.848z" fill="#F9F1E8"/>
+                      <path d="M336.9984 800.3072c-25.856 0-46.848-20.992-46.848-46.848v-166.3488c0-25.856 20.992-46.848 46.848-46.848 25.856 0 46.848 20.992 46.848 46.848v166.3488c0 25.856-20.992 46.848-46.848 46.848zM684.6976 800.3072c-25.856 0-46.848-20.992-46.848-46.848v-166.3488c0-25.856 20.992-46.848 46.848-46.848 25.856 0 46.848 20.992 46.848 46.848v166.3488c0 25.856-20.992 46.848-46.848 46.848zM510.8224 800.3072c-25.856 0-46.848-20.992-46.848-46.848v-273.408c0-25.856 20.992-46.848 46.848-46.848 25.856 0 46.848 20.992 46.848 46.848v273.408c0 25.856-20.9408 46.848-46.848 46.848z" fill="var(--theme-surface-muted, #f9f1e8)"/>
                       <path d="M336.9984 786.2272a32.768 32.768 0 0 1-32.768-32.768v-166.3488a32.768 32.768 0 1 1 65.536 0v166.3488a32.768 32.768 0 0 1-32.768 32.768zM684.6976 786.2272a32.768 32.768 0 0 1-32.768-32.768v-166.3488a32.768 32.768 0 1 1 65.536 0v166.3488c0 18.0736-14.6944 32.768-32.768 32.768zM510.8224 786.2272a32.768 32.768 0 0 1-32.768-32.768v-273.408a32.768 32.768 0 1 1 65.536 0v273.408c0.0512 18.0736-14.6432 32.768-32.768 32.768z" fill="#FFFFFF"/>
                     </svg>
                   </button>
@@ -188,6 +188,7 @@
           </template>
         </el-table-column>
       </el-table>
+      </div>
 
       <el-pagination
         style="margin-top: 12px; justify-content: flex-end; display: flex"
@@ -712,10 +713,10 @@ function fileColor(name) {
     XLS: '#1d8f4e', XLSX: '#1d8f4e', CSV: '#1d8f4e',
     PPT: '#e07a1d', PPTX: '#e07a1d',
     PNG: '#7c5cf0', JPG: '#7c5cf0', JPEG: '#7c5cf0', GIF: '#7c5cf0', WEBP: '#7c5cf0',
-    ZIP: '#8a7355', RAR: '#8a7355', '7Z': '#8a7355',
+    ZIP: 'var(--theme-primary-deep, #8a7355)', RAR: 'var(--theme-primary-deep, #8a7355)', '7Z': 'var(--theme-primary-deep, #8a7355)',
     TXT: '#6b7280', LOG: '#6b7280',
   }
-  return map[ext] || '#8a7355'
+  return map[ext] || 'var(--theme-primary-deep, #8a7355)'
 }
 
 async function loadFiles() {
@@ -1017,13 +1018,37 @@ onMounted(() => {
 
 /* 表格紧贴筛选栏 */
 .table-card {
+  --asset-table-band-y: 16px;
   margin-top: 0;
   background: transparent;
   border: none;
+  border-radius: 0 !important;
   box-shadow: none;
+  isolation: isolate;
+  overflow: visible !important;
+  position: relative;
+}
+.table-band {
+  position: relative;
+  isolation: isolate;
+}
+.table-band::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  background: var(--bg-page, #fafaf8);
+  pointer-events: none;
+}
+.table-band :deep(.gold-table) {
+  position: relative;
+  z-index: 1;
 }
 .table-card :deep(.el-card__body) {
-  padding: 0;
+  padding: var(--asset-table-band-y) 18px !important;
   background: transparent;
 }
 
@@ -1064,7 +1089,7 @@ onMounted(() => {
 .class-badge:hover {
   background: #c9a063;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(201, 160, 99, 0.35);
+  box-shadow: 0 2px 8px rgba(var(--theme-primary-rgb), 0.35);
   transform: translateY(-1px);
 }
 .class-badge__dot { display: none; }
@@ -1125,7 +1150,7 @@ onMounted(() => {
 /* ===================== 筛选栏：上移、左右两组、底边对齐 ===================== */
 .filter-bar {
   display: flex;
-  margin: -12px 0 -4px;
+  margin: -12px 0 8px;
   padding: 0;
 }
 .filter-row {
@@ -1163,12 +1188,12 @@ onMounted(() => {
 .form-control input {
   background-color: transparent;
   border: 0;
-  border-bottom: 2px solid #e0d2b8;
+  border-bottom: 2px solid var(--theme-input-border, #e0d2b8);
   display: block;
   width: 100%;
   padding: 14px 0 6px;
   font-size: 15px;
-  color: var(--gold-deep, #8a7355);
+  color: var(--theme-primary-deep, #8a7355);
   font-family: inherit;
   transition: border-bottom-color 0.25s ease;
 }
@@ -1176,7 +1201,7 @@ onMounted(() => {
 .form-control input:valid,
 .form-control.is-filled input {
   outline: 0;
-  border-bottom-color: var(--gold, #c5a47e);
+  border-bottom-color: var(--theme-primary, #c5a47e);
 }
 .form-control label {
   position: absolute;
@@ -1189,14 +1214,14 @@ onMounted(() => {
   display: inline-block;
   font-size: 15px;
   min-width: 5px;
-  color: #b9a78a;
+  color: var(--theme-text-muted, #b9a78a);
   letter-spacing: 1px;
   transition: 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 .form-control input:focus + label span,
 .form-control input:valid + label span,
 .form-control.is-filled label span {
-  color: var(--gold-deep, #8a7355);
+  color: var(--theme-primary-deep, #8a7355);
   transform: translateY(-18px);
   font-size: 11px;
   font-weight: 600;
@@ -1206,7 +1231,9 @@ onMounted(() => {
 .gold-table {
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #ecdfc9;
+  border: 1px solid var(--theme-border, #ecdfc9);
+  border-left: 0;
+  border-right: 0;
 }
 
 /* 表头：白底 + 金色文字（不要用透明，避免固定列表头与普通列表头重叠透出） */
@@ -1215,16 +1242,16 @@ onMounted(() => {
 .gold-table :deep(.el-table__fixed-right .gold-header-cell),
 .gold-table :deep(.el-table__fixed .gold-header-cell) {
   background-color: #ffffff !important;
-  color: #8a7355 !important;
+  color: var(--theme-primary-deep, #8a7355) !important;
   font-weight: 600;
   font-size: 16px;
   letter-spacing: 1.3px;
   height: 60px;
-  border-bottom: 2px solid #d4b89a !important;
+  border-bottom: 2px solid var(--theme-primary-light-3, #d4b89a) !important;
   border-right: none !important;
 }
 .gold-table :deep(.gold-header-cell .cell) {
-  color: #8a7355 !important;
+  color: var(--theme-primary-deep, #8a7355) !important;
   font-size: 17px;
   letter-spacing: 1.5px;
   font-weight: 700;
@@ -1235,26 +1262,22 @@ onMounted(() => {
 }
 /* 排序图标改为金色 */
 .gold-table :deep(.gold-header-cell .caret-wrapper .sort-caret.ascending) {
-  border-bottom-color: #8a7355;
+  border-bottom-color: var(--theme-primary-deep, #8a7355);
 }
 .gold-table :deep(.gold-header-cell .caret-wrapper .sort-caret.descending) {
-  border-top-color: #8a7355;
+  border-top-color: var(--theme-primary-deep, #8a7355);
 }
 
 /* 单元格：去除竖向边框，加大行高拉开行距 */
 .gold-table :deep(.el-table__row td) {
-  border-bottom: 1px solid #f3ece0 !important;
+  border-bottom: 1px solid var(--theme-table-line, #f3ece0) !important;
   border-right: none !important;
   padding: 14px 0 !important;
   font-size: 13.5px;
 }
-/* 关掉斑马纹的填色，行间距由 padding 提供呼吸感 */
-.gold-table :deep(.el-table__row--striped td.el-table__cell) {
-  background-color: transparent !important;
-}
 /* 悬停高亮（柔和米色） */
 .gold-table :deep(.el-table__body tr:hover > td.el-table__cell) {
-  background-color: #faf4e9 !important;
+  background-color: var(--theme-surface, #faf4e9) !important;
 }
 
 /* ===================== 图标按钮（使用内联 SVG） ===================== */
@@ -1287,18 +1310,21 @@ onMounted(() => {
   transition-duration: 0.1s;
 }
 .svg-icon-btn:focus-visible {
-  outline: 1px dashed rgba(138, 115, 85, 0.5);
+  outline: 1px dashed rgba(var(--theme-primary-deep-rgb), 0.5);
   outline-offset: 2px;
 }
 
 /* 编辑：金棕色 */
-.svg-icon-btn.edit svg { fill: #8a7355; }
-.svg-icon-btn.edit:hover svg { fill: #6e5a40; }
+.svg-icon-btn.edit svg { fill: var(--theme-primary-deep, #8a7355); }
+.svg-icon-btn.edit:hover svg { fill: var(--theme-text-hover, #6e5a40); }
 
 /* 二维码：深灰/黑，相对其他图标下移一点 */
 .svg-icon-btn.qr svg { fill: #333; }
 .svg-icon-btn.qr:hover svg { fill: #000; }
 .svg-icon-btn.qr { transform: translateY(1px); }
+/* 黑夜模式下：二维码图标改为白色 */
+html.dark .svg-icon-btn.qr svg { fill: #ffffff; }
+html.dark .svg-icon-btn.qr:hover svg { fill: #f0f0f0; }
 
 /* 删除：彩色 SVG 内置颜色，按钮本身仅做缩放反馈 */
 .svg-icon-btn.del svg { fill: initial; }
@@ -1316,11 +1342,11 @@ onMounted(() => {
 .svg-icon-btn.search-btn svg,
 .svg-icon-btn.reset-btn svg,
 .svg-icon-btn.add-btn svg,
-.svg-icon-btn.import-btn svg { fill: #8a7355; }
+.svg-icon-btn.import-btn svg { fill: var(--theme-primary-deep, #8a7355); }
 .svg-icon-btn.search-btn:hover svg,
 .svg-icon-btn.reset-btn:hover svg,
 .svg-icon-btn.add-btn:hover svg,
-.svg-icon-btn.import-btn:hover svg { fill: #6e5a40; }
+.svg-icon-btn.import-btn:hover svg { fill: var(--theme-text-hover, #6e5a40); }
 .svg-icon-btn.import-btn svg {
   transform: translateY(-1px);
   transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1387,7 +1413,7 @@ onMounted(() => {
   transition: background-color 0.2s ease;
 }
 .asset-edit-dialog :deep(.el-dialog__headerbtn:hover) {
-  background-color: rgba(138, 115, 85, 0.08);
+  background-color: rgba(var(--theme-primary-deep-rgb), 0.08);
 }
 .asset-edit-dialog :deep(.el-dialog__close) {
   font-size: 18px;
@@ -1401,7 +1427,7 @@ onMounted(() => {
 }
 .asset-edit-dialog :deep(.el-dialog__footer) {
   padding: 16px 36px 22px;
-  border-top: 1px solid #f3ece0;
+  border-top: 1px solid var(--theme-table-line, #f3ece0);
   background: #ffffff;
   flex-shrink: 0;
 }
@@ -1432,7 +1458,7 @@ onMounted(() => {
   margin: 0 10px 0 0 !important; /* label 与输入框的固定间距：10px */
   padding: 0 !important;
   text-align: left;
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   font-weight: 600;
   font-size: 13.5px;
   letter-spacing: 0.3px;
@@ -1443,7 +1469,7 @@ onMounted(() => {
 /* 必填星号 */
 .asset-edit-dialog :deep(.el-form-item.is-required > .el-form-item__label::before) {
   margin-right: 4px;
-  color: #c5a47e;
+  color: var(--theme-primary, #c5a47e);
 }
 /* 内容区：占满 label 之外的剩余空间 */
 .asset-edit-dialog :deep(.el-form-item__content) {
@@ -1464,7 +1490,7 @@ onMounted(() => {
 }
 .asset-edit-dialog :deep(.el-input__inner)::placeholder,
 .asset-edit-dialog :deep(.el-textarea__inner)::placeholder {
-  color: #c9bba0;
+  color: var(--theme-placeholder, #c9bba0);
 }
 /* 备注 textarea 这种多行控件，label 顶部对齐 */
 .asset-edit-dialog :deep(.el-form-item:has(.el-textarea)) {
@@ -1482,7 +1508,7 @@ onMounted(() => {
   gap: 10px;
   font-size: 16px;
   font-weight: 700;
-  color: #5a4730;
+  color: var(--theme-text-strong, #5a4730);
   margin: 0 0 14px;
   letter-spacing: 1px;
 }
@@ -1492,7 +1518,7 @@ onMounted(() => {
   justify-content: center;
   width: 22px;
   height: 22px;
-  color: #5a4730;
+  color: var(--theme-text-strong, #5a4730);
 }
 .asset-edit-dialog .section-icon svg {
   width: 20px;
@@ -1511,7 +1537,7 @@ onMounted(() => {
 .asset-edit-dialog :deep(.el-input__wrapper),
 .asset-edit-dialog :deep(.el-textarea__inner) {
   border-radius: 8px;
-  box-shadow: 0 0 0 1px #e6d9bf inset;
+  box-shadow: 0 0 0 1px var(--theme-input-border, #e6d9bf) inset;
   transition: box-shadow 0.2s ease;
   background: #ffffff;
 }
@@ -1521,28 +1547,28 @@ onMounted(() => {
 }
 .asset-edit-dialog :deep(.el-input__wrapper:hover),
 .asset-edit-dialog :deep(.el-textarea__inner:hover) {
-  box-shadow: 0 0 0 1px #d4b89a inset;
+  box-shadow: 0 0 0 1px var(--theme-primary-light-3, #d4b89a) inset;
 }
 .asset-edit-dialog :deep(.el-input__wrapper.is-focus),
 .asset-edit-dialog :deep(.el-textarea__inner:focus) {
-  box-shadow: 0 0 0 1.5px #8a7355 inset !important;
+  box-shadow: 0 0 0 1.5px var(--theme-primary-deep, #8a7355) inset !important;
 }
 .asset-edit-dialog :deep(.el-input.is-disabled .el-input__wrapper) {
-  background-color: #f8f3e9;
-  box-shadow: 0 0 0 1px #ecdfc9 inset;
+  background-color: var(--theme-surface-muted, #f8f3e9);
+  box-shadow: 0 0 0 1px var(--theme-border, #ecdfc9) inset;
 }
 .asset-edit-dialog :deep(.el-input.is-disabled .el-input__inner) {
-  color: #8a7355;
-  -webkit-text-fill-color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
+  -webkit-text-fill-color: var(--theme-primary-deep, #8a7355);
 }
 .asset-edit-dialog :deep(.el-input-group__append) {
-  background-color: #faf4e9;
-  color: #8a7355;
+  background-color: var(--theme-surface, #faf4e9);
+  color: var(--theme-primary-deep, #8a7355);
   border-radius: 0 8px 8px 0;
-  box-shadow: 0 0 0 1px #e6d9bf inset;
+  box-shadow: 0 0 0 1px var(--theme-input-border, #e6d9bf) inset;
 }
 .asset-edit-dialog :deep(.el-input-group__append .el-button) {
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   font-weight: 500;
   border: none;
   background: transparent;
@@ -1558,10 +1584,10 @@ onMounted(() => {
   justify-content: center;
   width: 36px;
   height: 100%;
-  background: #faf4e9;
-  color: #8a7355;
+  background: var(--theme-surface, #faf4e9);
+  color: var(--theme-primary-deep, #8a7355);
   font-weight: 600;
-  border-right: 1px solid #e6d9bf;
+  border-right: 1px solid var(--theme-input-border, #e6d9bf);
   margin-right: 10px;
 }
 /* 隐藏 number 输入框的上下箭头 */
@@ -1599,13 +1625,13 @@ onMounted(() => {
 
 /* 日期选择器图标颜色 */
 .asset-edit-dialog :deep(.el-input__prefix-inner > .el-icon) {
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
 }
 
 /* textarea 字符计数样式 */
 .asset-edit-dialog :deep(.el-textarea .el-input__count) {
   background: transparent;
-  color: #b9a78a;
+  color: var(--theme-text-muted, #b9a78a);
   font-size: 12px;
 }
 
@@ -1620,17 +1646,17 @@ onMounted(() => {
   height: 40px;
   padding: 0 24px;
   border-radius: 8px;
-  border: 2px solid #8a7355;
+  border: 2px solid var(--theme-primary-deep, #8a7355);
   background: transparent;
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   font-weight: 600;
   letter-spacing: 2px;
   transition: all 0.2s ease;
 }
 .asset-edit-dialog .btn-ghost:hover {
-  background: rgba(138, 115, 85, 0.1);
-  border-color: #6e5a40;
-  color: #6e5a40;
+  background: rgba(var(--theme-primary-deep-rgb), 0.1);
+  border-color: var(--theme-text-hover, #6e5a40);
+  color: var(--theme-text-hover, #6e5a40);
 }
 .asset-edit-dialog .btn-primary-gold {
   min-width: 120px;
@@ -1641,7 +1667,7 @@ onMounted(() => {
   color: #ffffff;
   font-weight: 600;
   letter-spacing: 2px;
-  background: linear-gradient(135deg, #c5a47e 0%, #8a7355 100%);
+  background: linear-gradient(135deg, var(--theme-primary, #c5a47e) 0%, var(--theme-primary-deep, #8a7355) 100%);
   box-shadow: none;
   transition: transform 0.15s ease, filter 0.2s ease;
 }
@@ -1667,9 +1693,9 @@ onMounted(() => {
 .files-upload :deep(.el-upload-dragger) {
   height: 160px;                    /* ★ 固定高度，与左侧备注 textarea 对齐 */
   padding: 0;
-  border: 1.5px dashed #d4b89a;
+  border: 1.5px dashed var(--theme-primary-light-3, #d4b89a);
   border-radius: 12px;
-  background: #fffdf8;
+  background: var(--theme-surface-subtle, #fffdf8);
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
@@ -1686,33 +1712,33 @@ onMounted(() => {
   resize: none;
 }
 .files-upload :deep(.el-upload-dragger:hover) {
-  border-color: #8a7355;
-  background: #fff9ec;
+  border-color: var(--theme-primary-deep, #8a7355);
+  background: var(--theme-surface-hover, #fff9ec);
 }
 .files-upload :deep(.el-upload-dragger.is-dragover) {
-  border-color: #8a7355;
-  background: #fff4dc;
-  box-shadow: 0 0 0 4px rgba(138, 115, 85, 0.08) inset;
+  border-color: var(--theme-primary-deep, #8a7355);
+  background: var(--theme-surface-strong, #fff4dc);
+  box-shadow: 0 0 0 4px rgba(var(--theme-primary-deep-rgb), 0.08) inset;
 }
 /* 已有文件时：默认状态用实线浅金色框，避免和列表内容争夺视觉焦点 */
 .files-upload.has-files :deep(.el-upload-dragger) {
   border-style: solid;
-  border-color: #ecdfc9;
+  border-color: var(--theme-border, #ecdfc9);
   cursor: default;                  /* 列表区不再整体可点 */
 }
 .files-upload.has-files :deep(.el-upload-dragger:hover) {
-  border-color: #ecdfc9;
-  background: #fffdf8;
+  border-color: var(--theme-border, #ecdfc9);
+  background: var(--theme-surface-subtle, #fffdf8);
 }
 /* 禁用态（新建模式） */
 .files-upload.is-disabled :deep(.el-upload-dragger) {
-  border-color: #ecdfc9;
-  background: #faf6ec;
+  border-color: var(--theme-border, #ecdfc9);
+  background: var(--theme-surface-muted, #faf6ec);
   cursor: not-allowed;
 }
 .files-upload.is-disabled :deep(.el-upload-dragger:hover) {
-  border-color: #ecdfc9;
-  background: #faf6ec;
+  border-color: var(--theme-border, #ecdfc9);
+  background: var(--theme-surface-muted, #faf6ec);
 }
 
 /* ===== 空状态：居中大图标 + 主标题 + 副标题 ===== */
@@ -1723,23 +1749,23 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #b9a78a;
+  color: var(--theme-text-muted, #b9a78a);
   text-align: center;
   padding: 16px;
 }
 .files-empty svg {
-  color: #c5a47e;
+  color: var(--theme-primary, #c5a47e);
   margin-bottom: 4px;
 }
 .files-empty-title {
   font-size: 14px;
   font-weight: 600;
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   letter-spacing: 0.5px;
 }
 .files-empty-sub {
   font-size: 12px;
-  color: #b9a78a;
+  color: var(--theme-text-muted, #b9a78a);
 }
 
 /* ===== 已有文件时的列表区 ===== */
@@ -1761,17 +1787,17 @@ onMounted(() => {
   flex-direction: column;
   gap: 2px;
   scrollbar-width: thin;
-  scrollbar-color: #d4b89a transparent;
+  scrollbar-color: var(--theme-primary-light-3, #d4b89a) transparent;
 }
 .files-list::-webkit-scrollbar {
   width: 6px;
 }
 .files-list::-webkit-scrollbar-thumb {
-  background: #d4b89a;
+  background: var(--theme-primary-light-3, #d4b89a);
   border-radius: 3px;
 }
 .files-list::-webkit-scrollbar-thumb:hover {
-  background: #b89770;
+  background: var(--theme-primary-dark-2, #b89770);
 }
 .files-list::-webkit-scrollbar-track {
   background: transparent;
@@ -1782,10 +1808,10 @@ onMounted(() => {
   flex-shrink: 0;
   margin: 0 8px 8px;
   padding: 6px;
-  border: 1px dashed #d4b89a;
+  border: 1px dashed var(--theme-primary-light-3, #d4b89a);
   border-radius: 8px;
   background: transparent;
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   font-size: 12.5px;
   font-weight: 500;
   letter-spacing: 0.3px;
@@ -1797,9 +1823,9 @@ onMounted(() => {
   transition: all 0.18s ease;
 }
 .files-add-more:hover {
-  border-color: #8a7355;
-  background: #fff7e6;
-  color: #5a4730;
+  border-color: var(--theme-primary-deep, #8a7355);
+  background: var(--theme-surface-hover, #fff7e6);
+  color: var(--theme-text-strong, #5a4730);
 }
 .files-add-more .plus {
   font-size: 14px;
@@ -1816,7 +1842,7 @@ onMounted(() => {
   transition: background-color 0.15s ease;
 }
 .file-item:hover {
-  background: #faf4e9;
+  background: var(--theme-surface, #faf4e9);
 }
 .file-icon {
   flex-shrink: 0;
@@ -1850,7 +1876,7 @@ onMounted(() => {
   line-height: 1.4;
 }
 .file-name:hover {
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   text-decoration: underline;
 }
 .file-name.as-text {
@@ -1870,8 +1896,8 @@ onMounted(() => {
   height: 16px;
   padding: 0 6px;
   border-radius: 8px;
-  background: #fff4dc;
-  color: #b8893a;
+  background: var(--theme-surface-strong, #fff4dc);
+  color: var(--theme-primary-deep, #b8893a);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -1880,18 +1906,18 @@ onMounted(() => {
   background: #fffaf0;
 }
 .file-item.is-pending:hover {
-  background: #fff4dc;
+  background: var(--theme-surface-strong, #fff4dc);
 }
 .file-sub {
   font-size: 11px;
-  color: #a89c84;
+  color: var(--theme-text-muted, #a89c84);
   display: inline-flex;
   align-items: center;
   gap: 5px;
   line-height: 1.3;
 }
 .file-sub .dot-sep {
-  color: #d4c8ad;
+  color: var(--theme-border-strong, #d4c8ad);
 }
 
 /* 操作按钮组：默认半隐藏，悬停 file-item 时显示 */
@@ -1911,7 +1937,7 @@ onMounted(() => {
   border-radius: 6px;
   border: none;
   background: transparent;
-  color: #8a7355;
+  color: var(--theme-primary-deep, #8a7355);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -1920,8 +1946,8 @@ onMounted(() => {
   transition: all 0.15s ease;
 }
 .file-action:hover {
-  background: #f0e3c8;
-  color: #5a4730;
+  background: var(--theme-surface-strong, #f0e3c8);
+  color: var(--theme-text-strong, #5a4730);
 }
 .file-action.file-del:hover {
   background: #fdebec;
@@ -1938,13 +1964,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #b9a78a;
+  color: var(--theme-text-muted, #b9a78a);
   font-size: 12px;
   text-align: center;
   padding: 20px;
 }
 .files-empty svg {
-  color: #d4b89a;
+  color: var(--theme-primary-light-3, #d4b89a);
 }
 </style>
 
@@ -1958,7 +1984,7 @@ onMounted(() => {
   max-width: none !important;
   padding: 14px 16px !important;
   border-radius: 10px !important;
-  border: 1px solid rgba(201, 160, 99, 0.6) !important;
+  border: 1px solid rgba(var(--theme-primary-rgb), 0.6) !important;
   box-shadow: 0 12px 32px rgba(94, 74, 46, 0.22),
     0 2px 8px rgba(94, 74, 46, 0.08) !important;
 }
@@ -1987,7 +2013,7 @@ onMounted(() => {
 }
 .confirm-inline-popconfirm .el-popper__arrow::before,
 .delete-asset-popconfirm .el-popper__arrow::before {
-  border-color: rgba(201, 160, 99, 0.6) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.6) !important;
 }
 
 /* ===================== 编辑/新增资产弹窗 进入/退出动效 ===================== */

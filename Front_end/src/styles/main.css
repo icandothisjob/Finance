@@ -1,13 +1,55 @@
 /* ============================================================
+   View Transition：日夜模式切换 — 从图标位置圆形扩散揭示
+   禁用默认的交叉淡入淡出，改由 JS 通过 Web Animations API
+   控制 clip-path 圆形扩散。
+   ============================================================ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* ============================================================
    全局变量：浅色 + 浅金色点缀（参考 ChatGPT 风）
    ============================================================ */
 :root {
+  /* theme palette */
+  --theme-primary: #c5a47e;
+  --theme-primary-deep: #8a7355;
+  --theme-primary-light: #ffe0a6;
+  --theme-primary-light-3: #d4b89a;
+  --theme-primary-light-5: #e0c8b1;
+  --theme-primary-light-7: #ecdcc8;
+  --theme-primary-light-8: #f0e3d3;
+  --theme-primary-light-9: #faf2e6;
+  --theme-primary-dark-2: #a68a64;
+  --theme-primary-rgb: 197, 164, 126;
+  --theme-primary-deep-rgb: 138, 115, 85;
+  --theme-surface: #faf4e9;
+  --theme-surface-hover: #fff9ec;
+  --theme-surface-strong: #fff4dc;
+  --theme-surface-subtle: #fffdf8;
+  --theme-surface-muted: #faf6ec;
+  --theme-border: #ecdfc9;
+  --theme-border-strong: #d4b89a;
+  --theme-input-border: #e6d9bf;
+  --theme-table-line: #f3ece0;
+  --theme-text-strong: #5a4730;
+  --theme-text-hover: #6e5a40;
+  --theme-text-muted: #b9a78a;
+  --theme-placeholder: #c9bba0;
   /* 背景层级 */
   --bg-page: #fafaf8;          /* 主背景：极浅暖灰 */
   --bg-card: #ffffff;          /* 卡片 */
   --bg-aside: #f7f6f3;         /* 侧边栏 */
-  --bg-hover: rgba(197, 164, 126, 0.08);   /* hover 浅金米色 */
-  --bg-active: rgba(197, 164, 126, 0.16);  /* active 浅金 */
+  --bg-hover: rgba(var(--theme-primary-rgb), 0.08);
+  --bg-active: rgba(var(--theme-primary-rgb), 0.16);
 
   /* 文字层级 */
   --text-primary: #2f2f33;
@@ -15,9 +57,9 @@
   --text-muted: #b4b4be;
 
   /* 浅金色系 */
-  --gold: #c5a47e;
-  --gold-deep: #8a7355;
-  --gold-light: #ffe0a6;
+  --gold: var(--theme-primary);
+  --gold-deep: var(--theme-primary-deep);
+  --gold-light: var(--theme-primary-light);
 
   /* 分割线 */
   --divider: rgba(0, 0, 0, 0.06);
@@ -26,13 +68,13 @@
 
 /* Element Plus 主色覆盖：把 primary 改为浅金色 */
 :root {
-  --el-color-primary: #c5a47e;
-  --el-color-primary-light-3: #d4b89a;
-  --el-color-primary-light-5: #e0c8b1;
-  --el-color-primary-light-7: #ecdcc8;
-  --el-color-primary-light-8: #f0e3d3;
-  --el-color-primary-light-9: #faf2e6;
-  --el-color-primary-dark-2: #a68a64;
+  --el-color-primary: var(--theme-primary);
+  --el-color-primary-light-3: var(--theme-primary-light-3);
+  --el-color-primary-light-5: var(--theme-primary-light-5);
+  --el-color-primary-light-7: var(--theme-primary-light-7);
+  --el-color-primary-light-8: var(--theme-primary-light-8);
+  --el-color-primary-light-9: var(--theme-primary-light-9);
+  --el-color-primary-dark-2: var(--theme-primary-dark-2);
 
   --el-text-color-primary: var(--text-primary);
   --el-text-color-regular: var(--text-secondary);
@@ -41,6 +83,131 @@
   --el-fill-color-blank: var(--bg-card);
   --el-bg-color: var(--bg-card);
   --el-bg-color-page: var(--bg-page);
+}
+
+html[data-theme='blue'] {
+  --theme-primary: #4f8fd8;
+  --theme-primary-deep: #245f9f;
+  --theme-primary-light: #d8eaff;
+  --theme-primary-light-3: #8fb9e6;
+  --theme-primary-light-5: #b6d2f1;
+  --theme-primary-light-7: #d3e5f7;
+  --theme-primary-light-8: #e0edf9;
+  --theme-primary-light-9: #eef6ff;
+  --theme-primary-dark-2: #1f548c;
+  --theme-primary-rgb: 79, 143, 216;
+  --theme-primary-deep-rgb: 36, 95, 159;
+  --theme-surface: #eef6ff;
+  --theme-surface-hover: #e7f2ff;
+  --theme-surface-strong: #dcecff;
+  --theme-surface-subtle: #fbfdff;
+  --theme-surface-muted: #f3f8fd;
+  --theme-border: #cfe0f3;
+  --theme-border-strong: #8fb9e6;
+  --theme-input-border: #bed5eb;
+  --theme-table-line: #e5eef7;
+  --theme-text-strong: #17456f;
+  --theme-text-hover: #1b4f80;
+  --theme-text-muted: #7e9bb7;
+  --theme-placeholder: #9ab3ca;
+}
+
+html[data-theme='green'] {
+  --theme-primary: #46a76d;
+  --theme-primary-deep: #21734a;
+  --theme-primary-light: #dff5e8;
+  --theme-primary-light-3: #86cfa1;
+  --theme-primary-light-5: #afe0bf;
+  --theme-primary-light-7: #cfecd9;
+  --theme-primary-light-8: #ddf3e5;
+  --theme-primary-light-9: #eefaf2;
+  --theme-primary-dark-2: #1d633f;
+  --theme-primary-rgb: 70, 167, 109;
+  --theme-primary-deep-rgb: 33, 115, 74;
+  --theme-surface: #eefaf2;
+  --theme-surface-hover: #e7f7ed;
+  --theme-surface-strong: #dff5e8;
+  --theme-surface-subtle: #fbfffc;
+  --theme-surface-muted: #f1f8f3;
+  --theme-border: #cde9d6;
+  --theme-border-strong: #86cfa1;
+  --theme-input-border: #bfe0cb;
+  --theme-table-line: #e4f1e8;
+  --theme-text-strong: #185035;
+  --theme-text-hover: #1d633f;
+  --theme-text-muted: #759d83;
+  --theme-placeholder: #92b49e;
+}
+
+/* ============================================================
+   暗色模式（黑夜）：覆写自定义变量 + Element Plus 变量
+   ============================================================ */
+html.dark,
+html[data-mode='dark'] {
+  /* 主色：在暗色背景下提亮一档，方便辨认 */
+  --theme-primary-deep: var(--theme-primary);
+
+  /* 基础层级：极深背景 + 浅文字 */
+  --bg-page: #0e0e12;
+  --bg-card: #181820;
+  --bg-aside: #131318;
+  --bg-hover: rgba(var(--theme-primary-rgb), 0.16);
+  --bg-active: rgba(var(--theme-primary-rgb), 0.26);
+
+  --text-primary: #ececf1;
+  --text-secondary: #b5b5c0;
+  --text-muted: #7a7a85;
+
+  --divider: rgba(255, 255, 255, 0.08);
+  --divider-strong: rgba(255, 255, 255, 0.14);
+
+  /* surface：以"暗色 + 主色微染"替换原本浅色面板 */
+  --theme-surface: #20202a;
+  --theme-surface-hover: #27273a;
+  --theme-surface-strong: #2c2c40;
+  --theme-surface-subtle: #1a1a22;
+  --theme-surface-muted: #23232e;
+  --theme-border: rgba(255, 255, 255, 0.10);
+  --theme-border-strong: rgba(var(--theme-primary-rgb), 0.55);
+  --theme-input-border: rgba(255, 255, 255, 0.28);
+  --theme-table-line: rgba(255, 255, 255, 0.07);
+  --theme-text-strong: #f0e6d3;
+  --theme-text-hover: var(--theme-primary);
+  --theme-text-muted: #8a8a95;
+  --theme-placeholder: #6a6a75;
+
+  /* Element Plus 主色浅阶：暗色下改为"主色 + 低不透明度"，用于 hover/active/striped 背景 */
+  --theme-primary-light-3: rgba(var(--theme-primary-rgb), 0.55);
+  --theme-primary-light-5: rgba(var(--theme-primary-rgb), 0.30);
+  --theme-primary-light-7: rgba(var(--theme-primary-rgb), 0.18);
+  --theme-primary-light-8: rgba(var(--theme-primary-rgb), 0.14);
+  --theme-primary-light-9: rgba(var(--theme-primary-rgb), 0.10);
+}
+
+/* 暗色下重新映射给 element-plus，覆盖 css-vars.css 的默认蓝色主色 */
+html.dark {
+  --el-color-primary: var(--theme-primary);
+  --el-color-primary-light-3: var(--theme-primary-light-3);
+  --el-color-primary-light-5: var(--theme-primary-light-5);
+  --el-color-primary-light-7: var(--theme-primary-light-7);
+  --el-color-primary-light-8: var(--theme-primary-light-8);
+  --el-color-primary-light-9: var(--theme-primary-light-9);
+  --el-color-primary-dark-2: var(--theme-primary-deep);
+
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
+  --el-text-color-secondary: var(--text-muted);
+  --el-text-color-placeholder: var(--theme-placeholder);
+
+  --el-border-color: var(--theme-input-border);
+  --el-border-color-light: var(--divider);
+  --el-border-color-lighter: var(--divider);
+  --el-border-color-extra-light: var(--divider);
+
+  --el-fill-color-blank: var(--bg-card);
+  --el-bg-color: var(--bg-card);
+  --el-bg-color-page: var(--bg-page);
+  --el-bg-color-overlay: var(--theme-surface);
 }
 
 html,
@@ -91,12 +258,12 @@ body,
   background-color: var(--divider) !important;
 }
 .el-table th.el-table__cell {
-  background: #faf9f6 !important;
+  background: var(--theme-surface-subtle) !important;
   color: var(--text-secondary) !important;
   font-weight: 500;
 }
 .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
-  background: #fbfaf7 !important;
+  background: var(--theme-surface-subtle) !important;
 }
 .el-table tbody tr:hover > td.el-table__cell {
   background: var(--bg-hover) !important;
@@ -109,6 +276,59 @@ body,
   box-shadow: 0 0 0 1px var(--gold) inset !important;
 }
 
+/* 主题色选择下拉：去掉边框、底色、箭头与文字间距，只保留色块 */
+.theme-dropdown-popper.el-popper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-top: -14px !important;
+}
+.theme-dropdown-popper.el-popper .el-popper__arrow,
+.theme-dropdown-popper.el-popper .el-popper__arrow::before {
+  display: none !important;
+}
+.theme-dropdown-popper .el-dropdown-menu {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 4px !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: max-content;
+}
+.theme-dropdown-popper .el-dropdown-menu__item {
+  padding: 2px !important;
+  margin: 0 !important;
+  line-height: 1 !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+}
+.theme-dropdown-popper .el-dropdown-menu__item:not(.is-disabled):hover,
+.theme-dropdown-popper .el-dropdown-menu__item:focus {
+  background: transparent !important;
+  color: inherit !important;
+  outline: none !important;
+}
+.theme-dropdown-popper .theme-menu-dot {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  transition: transform 0.15s ease;
+}
+.theme-dropdown-popper .el-dropdown-menu__item:hover .theme-menu-dot {
+  transform: scale(1.15);
+}
+.theme-dropdown-popper .el-dropdown-menu__item.is-current-theme .theme-menu-dot {
+  outline: 2px solid var(--theme-primary-deep, #8a7355);
+  outline-offset: 2px;
+}
+
 /* 滚动条美化 */
 ::-webkit-scrollbar {
   width: 8px;
@@ -119,5 +339,916 @@ body,
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(197, 164, 126, 0.5);
+  background: rgba(var(--theme-primary-rgb), 0.5);
+}
+
+/* ============================================================
+   黑夜模式：在 html.dark / html[data-mode='dark'] 下生效
+   - 重新映射全局 CSS 变量；
+   - 覆盖 Element Plus 内置 dark 变量，使主色光浅阶跟随主题色；
+   - 修正项目内硬编码 #fff/浅色背景的局部样式。
+   ============================================================ */
+html.dark {
+  /* 基础背景 / 文本 / 分割线 */
+  --bg-page: #14141a;
+  --bg-card: #1d1d24;
+  --bg-aside: #181820;
+  --bg-hover: rgba(var(--theme-primary-rgb), 0.16);
+  --bg-active: rgba(var(--theme-primary-rgb), 0.26);
+
+  --text-primary: #ecedf1;
+  --text-secondary: #a8abb5;
+  --text-muted: #6c6e78;
+
+  --divider: rgba(255, 255, 255, 0.08);
+  --divider-strong: rgba(255, 255, 255, 0.14);
+
+  /* 主题面 / 边框 / 提示 */
+  --theme-surface: #232329;
+  --theme-surface-hover: #2a2a31;
+  --theme-surface-strong: #2f2f37;
+  --theme-surface-subtle: #1f1f25;
+  --theme-surface-muted: #26262c;
+  --theme-border: rgba(255, 255, 255, 0.10);
+  --theme-border-strong: rgba(var(--theme-primary-rgb), 0.55);
+  --theme-input-border: rgba(255, 255, 255, 0.28);
+  --theme-table-line: rgba(255, 255, 255, 0.08);
+  --theme-text-strong: var(--text-primary);
+  --theme-text-hover: var(--theme-primary);
+  --theme-text-muted: #8a8c95;
+  --theme-placeholder: #6a6c75;
+
+  /* 主题色光浅阶：暗色下用半透明主色，避免亮色蒙版破坏暗色基调 */
+  --theme-primary-light-3: rgba(var(--theme-primary-rgb), 0.55);
+  --theme-primary-light-5: rgba(var(--theme-primary-rgb), 0.35);
+  --theme-primary-light-7: rgba(var(--theme-primary-rgb), 0.20);
+  --theme-primary-light-8: rgba(var(--theme-primary-rgb), 0.14);
+  --theme-primary-light-9: rgba(var(--theme-primary-rgb), 0.10);
+
+  /* 重新接管 Element Plus 主色变量（dark css 会把它们重置为蓝色，需再次覆盖） */
+  --el-color-primary: var(--theme-primary);
+  --el-color-primary-light-3: var(--theme-primary-light-3);
+  --el-color-primary-light-5: var(--theme-primary-light-5);
+  --el-color-primary-light-7: var(--theme-primary-light-7);
+  --el-color-primary-light-8: var(--theme-primary-light-8);
+  --el-color-primary-light-9: var(--theme-primary-light-9);
+  --el-color-primary-dark-2: var(--theme-primary-dark-2);
+
+  --el-text-color-primary: var(--text-primary);
+  --el-text-color-regular: var(--text-secondary);
+  --el-text-color-secondary: var(--text-muted);
+  --el-text-color-placeholder: var(--theme-placeholder);
+  --el-text-color-disabled: var(--text-muted);
+
+  --el-border-color: var(--theme-border);
+  --el-border-color-light: var(--divider);
+  --el-border-color-lighter: var(--divider);
+  --el-border-color-extra-light: var(--divider);
+
+  --el-fill-color-blank: var(--bg-card);
+  --el-bg-color: var(--bg-card);
+  --el-bg-color-page: var(--bg-page);
+  --el-bg-color-overlay: var(--bg-card);
+}
+
+html.dark body,
+html.dark #app {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+}
+
+/* 滚动条 */
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--theme-primary-rgb), 0.55);
+}
+
+/* Element Plus 通用组件背景修正 */
+html.dark .el-card {
+  background: var(--bg-card) !important;
+}
+html.dark .el-card__header {
+  border-bottom-color: var(--divider) !important;
+}
+html.dark .el-dialog,
+html.dark .el-message-box,
+html.dark .el-drawer,
+html.dark .el-popover,
+html.dark .el-dropdown-menu,
+html.dark .el-select-dropdown,
+html.dark .el-picker__popper {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+html.dark .el-dialog__title,
+html.dark .el-message-box__title {
+  color: var(--text-primary) !important;
+}
+html.dark .el-input__wrapper,
+html.dark .el-textarea__inner,
+html.dark .el-select .el-input__wrapper {
+  background: var(--theme-surface-subtle) !important;
+  box-shadow: 0 0 0 1px var(--theme-input-border) inset !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-input__inner,
+html.dark .el-textarea__inner {
+  color: var(--text-primary) !important;
+}
+html.dark .el-input__inner::placeholder,
+html.dark .el-textarea__inner::placeholder {
+  color: var(--theme-placeholder) !important;
+}
+html.dark .el-table {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-table tr,
+html.dark .el-table td.el-table__cell,
+html.dark .el-table th.el-table__cell {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-table th.el-table__cell {
+  background: var(--theme-surface-subtle) !important;
+  color: var(--text-secondary) !important;
+}
+html.dark .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: var(--theme-surface-subtle) !important;
+}
+html.dark .el-table tbody tr:hover > td.el-table__cell {
+  background: var(--bg-hover) !important;
+}
+html.dark .el-pagination,
+html.dark .el-pagination__total,
+html.dark .el-pagination .btn-prev,
+html.dark .el-pagination .btn-next {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+}
+html.dark .el-pagination button:disabled {
+  background: transparent !important;
+}
+html.dark .el-pager li {
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+}
+html.dark .el-pager li.is-active {
+  color: var(--theme-primary) !important;
+}
+html.dark .el-button {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-button:hover {
+  background: var(--theme-surface-hover) !important;
+  border-color: var(--theme-border-strong) !important;
+  color: var(--theme-primary) !important;
+}
+html.dark .el-button.is-text,
+html.dark .el-button.is-link {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+html.dark .el-button--primary {
+  background: var(--theme-primary) !important;
+  border-color: var(--theme-primary) !important;
+  color: #fff !important;
+}
+html.dark .el-button--primary:hover {
+  background: var(--theme-primary-deep) !important;
+  border-color: var(--theme-primary-deep) !important;
+  color: #fff !important;
+}
+html.dark .el-select-dropdown__item.hover,
+html.dark .el-select-dropdown__item:hover {
+  background: var(--bg-hover) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-select-dropdown__item.selected {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   项目内硬编码白底/浅底背景：在 dark 模式下统一改为暗色面
+   ============================================================ */
+html.dark .dashboard,
+html.dark .dashboard-container,
+html.dark .page-card,
+html.dark .content-card,
+html.dark .messages-page,
+html.dark .logs-page {
+  background: var(--bg-page) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 大范围兜底：把组件中常见的 #fff/#ffffff 背景替换为暗色面板 */
+html.dark .asset-table-wrap,
+html.dark .table-wrap,
+html.dark .toolbar,
+html.dark .header-bar,
+html.dark .panel,
+html.dark .card,
+html.dark .filter-bar,
+html.dark .summary,
+html.dark .log-list,
+html.dark .log-detail,
+html.dark .log-item,
+html.dark .qr-card,
+html.dark .qr-actions,
+html.dark .import-dialog,
+html.dark .preview-summary,
+html.dark .preview-table,
+html.dark .empty-block {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* AssetsTable 的几个固定浅底状态色块在暗色下保持可读性 */
+html.dark .status-tag,
+html.dark .class-badge {
+  filter: brightness(1.08);
+}
+
+/* 主题色选择下拉在暗色下也应保持完全透明（覆盖 .el-popper.is-light 的暗色背景） */
+html.dark .theme-dropdown-popper.el-popper,
+html.dark .theme-dropdown-popper.el-popper.is-light,
+html.dark .theme-dropdown-popper .el-dropdown-menu {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+html.dark .theme-dropdown-popper.el-popper .el-popper__arrow,
+html.dark .theme-dropdown-popper.el-popper .el-popper__arrow::before {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* ============================================================
+   .form-control 浮动 label 下划线输入框
+   暗色下默认的 --theme-input-border (rgba 白色) 在深色背景上
+   不够显眼，给一个明确的强对比下划线。
+   ============================================================ */
+html.dark .form-control input {
+  border-bottom: 2px solid var(--theme-primary, #c5a47e) !important;
+  color: var(--theme-primary) !important;
+}
+html.dark .form-control input:focus,
+html.dark .form-control input:valid,
+html.dark .form-control.is-filled input {
+  border-bottom-color: var(--theme-primary) !important;
+}
+html.dark .form-control label span {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+html.dark .form-control input:focus + label span,
+html.dark .form-control input:valid + label span,
+html.dark .form-control.is-filled label span {
+  color: var(--theme-primary) !important;
+}
+
+/* ============================================================
+   Messages / 日志页 暗色覆盖
+   说明：Messages.vue 内大量硬编码 #fff / #f9f5ec / #2f2f33 等浅色。
+   这里通过更高特异度的全局规则在 dark 模式下统一替换为暗色变量。
+   ============================================================ */
+html.dark .messages-page,
+html.dark .messages-page .scope-btn.active {
+  color: var(--text-primary) !important;
+}
+html.dark .messages-page .actor,
+html.dark .messages-page .msg-summary {
+  color: var(--text-primary) !important;
+}
+html.dark .messages-page .meta-time {
+  color: var(--text-muted) !important;
+}
+html.dark .messages-page .msg-card {
+  background: var(--bg-card) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.32) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+html.dark .messages-page .msg-card:hover {
+  border-color: rgba(var(--theme-primary-rgb), 0.55) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45) !important;
+}
+html.dark .messages-page .msg-card.unread {
+  background: var(--theme-surface-subtle) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.55) !important;
+}
+html.dark .messages-page .changes {
+  background: var(--theme-surface-muted) !important;
+}
+/* action-tag：暗色下做反转，色块用半透明带主色，文字用更亮的同色 */
+html.dark .messages-page .action-tag,
+html.dark .log-detail-dialog .action-tag {
+  background: rgba(var(--theme-primary-rgb), 0.18) !important;
+  color: var(--theme-primary) !important;
+}
+html.dark .messages-page .tag-asset-create,
+html.dark .log-detail-dialog .tag-asset-create {
+  background: rgba(46, 160, 109, 0.18) !important;
+  color: #6cd1a0 !important;
+}
+html.dark .messages-page .tag-asset-update,
+html.dark .log-detail-dialog .tag-asset-update {
+  background: rgba(214, 158, 70, 0.18) !important;
+  color: #e7b76b !important;
+}
+html.dark .messages-page .tag-asset-delete,
+html.dark .messages-page .tag-file-delete,
+html.dark .log-detail-dialog .tag-asset-delete,
+html.dark .log-detail-dialog .tag-file-delete {
+  background: rgba(229, 90, 90, 0.20) !important;
+  color: #f4928f !important;
+}
+html.dark .messages-page .tag-asset-qr-regen,
+html.dark .messages-page .tag-file-upload,
+html.dark .log-detail-dialog .tag-asset-qr-regen,
+html.dark .log-detail-dialog .tag-file-upload {
+  background: rgba(80, 135, 200, 0.20) !important;
+  color: #82b6ec !important;
+}
+html.dark .messages-page .tag-login,
+html.dark .messages-page .tag-logout,
+html.dark .log-detail-dialog .tag-login,
+html.dark .log-detail-dialog .tag-logout {
+  background: rgba(148, 102, 184, 0.22) !important;
+  color: #c8a5e2 !important;
+}
+
+/* 日志详情 dialog（非 scoped） */
+html.dark .log-detail-dialog .el-dialog {
+  background: var(--bg-card) !important;
+  border-color: var(--theme-border) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55) !important;
+}
+html.dark .log-detail-dialog .el-dialog__header {
+  background: linear-gradient(180deg, var(--theme-surface-strong) 0%, var(--bg-card) 100%) !important;
+  border-bottom-color: rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+html.dark .log-detail-dialog .dlg-actor,
+html.dark .log-detail-dialog .dlg-meta-value {
+  color: var(--text-primary) !important;
+}
+html.dark .log-detail-dialog .dlg-summary {
+  color: var(--text-secondary) !important;
+}
+html.dark .log-detail-dialog .dlg-meta-row,
+html.dark .log-detail-dialog .dlg-empty {
+  background: var(--theme-surface-muted) !important;
+}
+html.dark .log-detail-dialog .dlg-change-row {
+  background: var(--theme-surface-subtle) !important;
+}
+html.dark .log-detail-dialog .dlg-change-row:hover {
+  background: var(--theme-surface-hover) !important;
+}
+
+/* ============================================================
+   AssetsTable / 资产表 暗色覆盖
+   ============================================================ */
+html.dark .table-card,
+html.dark .toolbar-card,
+html.dark .asset-toolbar,
+html.dark .asset-table-card,
+html.dark .filter-popover,
+html.dark .filter-panel,
+html.dark .filter-container {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* 资产分类徽章 .class-badge：保留主色调，但在暗色下色块加深，文字提亮 */
+html.dark .class-badge {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
+html.dark .class-badge[data-class="IT"] { color: #82b6ec !important; border-color: #5a91d4 !important; }
+html.dark .class-badge[data-class="OA"] { color: #74cca6 !important; border-color: #58b890 !important; }
+html.dark .class-badge[data-class="FA"] { color: #e2a36b !important; border-color: #c98552 !important; }
+html.dark .class-badge[data-class="VE"] { color: #b596d2 !important; border-color: #9d7fbe !important; }
+
+/* 状态点保留鲜艳颜色（无需覆盖），但状态文字色在暗色下要可读 */
+html.dark .status-tag,
+html.dark .status-text {
+  color: var(--text-primary) !important;
+}
+
+/* 通用：资产表里出现的硬编码白底容器 */
+html.dark .asset-row,
+html.dark .asset-cell,
+html.dark .detail-panel,
+html.dark .detail-section,
+html.dark .file-card,
+html.dark .file-list,
+html.dark .file-item {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================================
+   资产表表头：原始硬编码 background-color: #ffffff !important
+   暗色下要还原为暗色面板。
+   ============================================================ */
+html.dark .gold-table .gold-header-cell,
+html.dark .gold-table .el-table__header-wrapper thead tr,
+html.dark .gold-table .el-table__fixed-header-wrapper th.gold-header-cell,
+html.dark .gold-table .el-table__fixed-right .gold-header-cell,
+html.dark .gold-table .el-table__fixed .gold-header-cell {
+  background-color: var(--theme-surface-subtle) !important;
+  color: var(--theme-primary) !important;
+  border-bottom-color: rgba(var(--theme-primary-rgb), 0.4) !important;
+}
+html.dark .gold-table .gold-header-cell .cell {
+  color: var(--theme-primary) !important;
+}
+html.dark .gold-table {
+  border-color: var(--theme-border) !important;
+}
+html.dark .gold-table .el-table__row td {
+  border-bottom-color: var(--theme-table-line) !important;
+}
+html.dark .gold-table .el-table__body tr:hover > td.el-table__cell {
+  background-color: var(--bg-hover) !important;
+}
+
+/* ============================================================
+   资产编辑 / 新增 弹窗 (.asset-edit-dialog)
+   ============================================================ */
+html.dark .asset-edit-dialog .el-dialog {
+  background: var(--bg-card) !important;
+  border-color: var(--theme-border) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+html.dark .asset-edit-dialog .el-dialog__header,
+html.dark .asset-edit-dialog .el-dialog__footer {
+  background: var(--bg-card) !important;
+  border-top-color: var(--theme-table-line) !important;
+}
+html.dark .asset-edit-dialog .el-dialog__close {
+  color: var(--text-secondary) !important;
+}
+
+/* ============================================================
+   资产二维码弹窗 (.asset-qr-dialog) / 导入弹窗 (.asset-import-dialog) / fix-field-dialog
+   ============================================================ */
+html.dark .asset-qr-dialog .el-dialog,
+html.dark .asset-import-dialog .el-dialog,
+html.dark .fix-field-dialog .el-dialog {
+  background: var(--bg-card) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55) !important;
+}
+html.dark .asset-qr-dialog .el-dialog__header,
+html.dark .asset-qr-dialog .el-dialog__body,
+html.dark .asset-qr-dialog .el-dialog__footer,
+html.dark .asset-import-dialog .el-dialog__header,
+html.dark .asset-import-dialog .el-dialog__body,
+html.dark .asset-import-dialog .el-dialog__footer,
+html.dark .fix-field-dialog .el-dialog__header,
+html.dark .fix-field-dialog .el-dialog__body,
+html.dark .fix-field-dialog .el-dialog__footer {
+  background: var(--bg-card) !important;
+}
+/* 内部硬编码白底卡片统一替换 */
+html.dark .asset-qr-dialog [style*="background: #fff"],
+html.dark .asset-qr-dialog [style*="background:#fff"],
+html.dark .asset-import-dialog [style*="background: #fff"],
+html.dark .asset-import-dialog [style*="background:#fff"] {
+  background: var(--bg-card) !important;
+}
+html.dark .qr-card,
+html.dark .qr-meta-card,
+html.dark .preview-summary,
+html.dark .preview-table,
+html.dark .preview-row,
+html.dark .preview-empty {
+  background: var(--theme-surface-subtle) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* ============================================================
+   Element Plus messagebox / tooltip / message 提示 暗色补充
+   ============================================================ */
+html.dark .el-message {
+  background: var(--bg-card) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-message__content {
+  color: var(--text-primary) !important;
+}
+html.dark .el-tooltip__popper {
+  background: var(--theme-surface-strong) !important;
+  color: var(--text-primary) !important;
+}
+
+/* ============================================================
+   黑夜模式：针对具体组件硬编码颜色做反相 / 调暗
+   说明：Vue scoped 把类选择器复合成 `.x[data-v-...]`，
+        在外部用 `html.dark .x` 即可（特异度 (0,2,1) > scoped 的 (0,2,0)）。
+        为了兼容嵌套类，统一加 !important。
+   ============================================================ */
+
+/* -------- 日志页（Messages.vue） -------- */
+html.dark .messages-page {
+  color: var(--text-primary) !important;
+}
+html.dark .msg-card {
+  background: var(--bg-card) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.35) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) !important;
+}
+html.dark .msg-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.6) !important;
+}
+html.dark .msg-card.unread {
+  background: var(--theme-surface) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.55) !important;
+}
+html.dark .actor,
+html.dark .msg-summary,
+html.dark .scope-btn.active {
+  color: var(--text-primary) !important;
+}
+html.dark .meta-time {
+  color: var(--text-muted) !important;
+}
+html.dark .changes {
+  background: var(--theme-surface-subtle) !important;
+  border-left-color: rgba(var(--theme-primary-rgb), 0.6) !important;
+}
+html.dark .ch-before {
+  color: #ff8a8a !important;
+  background: rgba(245, 108, 108, 0.16) !important;
+}
+html.dark .ch-after {
+  color: #6fd49b !important;
+  background: rgba(70, 167, 109, 0.18) !important;
+}
+/* 日志类型 tag —— 暗色下用半透明色 + 高亮文字 */
+html.dark .action-tag {
+  background: rgba(var(--theme-primary-rgb), 0.18) !important;
+  color: var(--theme-primary) !important;
+}
+html.dark .tag-asset-create,
+html.dark .log-detail-dialog .tag-asset-create {
+  background: rgba(44, 122, 94, 0.22) !important;
+  color: #6fd49b !important;
+}
+html.dark .tag-asset-update,
+html.dark .log-detail-dialog .tag-asset-update {
+  background: rgba(176, 138, 82, 0.22) !important;
+  color: #e0b974 !important;
+}
+html.dark .tag-asset-delete,
+html.dark .tag-file-delete,
+html.dark .log-detail-dialog .tag-asset-delete,
+html.dark .log-detail-dialog .tag-file-delete {
+  background: rgba(196, 69, 69, 0.22) !important;
+  color: #ff8a8a !important;
+}
+html.dark .tag-asset-qr-regen,
+html.dark .tag-file-upload,
+html.dark .log-detail-dialog .tag-asset-qr-regen,
+html.dark .log-detail-dialog .tag-file-upload {
+  background: rgba(79, 143, 216, 0.22) !important;
+  color: #7fb6ee !important;
+}
+html.dark .tag-login,
+html.dark .tag-logout,
+html.dark .log-detail-dialog .tag-login,
+html.dark .log-detail-dialog .tag-logout {
+  background: rgba(155, 110, 200, 0.22) !important;
+  color: #c9a8e6 !important;
+}
+/* 日志详情弹窗（非 scoped） */
+html.dark .log-detail-dialog .el-dialog {
+  background: var(--bg-card) !important;
+  border-color: rgba(var(--theme-primary-rgb), 0.35) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+}
+html.dark .log-detail-dialog .el-dialog__header {
+  background: linear-gradient(180deg, var(--theme-surface) 0%, var(--bg-card) 100%) !important;
+  border-bottom-color: rgba(var(--theme-primary-rgb), 0.25) !important;
+}
+html.dark .log-detail-dialog .dlg-actor,
+html.dark .log-detail-dialog .dlg-meta-value {
+  color: var(--text-primary) !important;
+}
+html.dark .log-detail-dialog .dlg-summary {
+  color: var(--text-secondary) !important;
+}
+html.dark .log-detail-dialog .dlg-meta-row,
+html.dark .log-detail-dialog .dlg-empty {
+  background: var(--theme-surface-subtle) !important;
+}
+html.dark .log-detail-dialog .dlg-change-row {
+  background: var(--theme-surface-subtle) !important;
+}
+html.dark .log-detail-dialog .dlg-change-row:hover {
+  background: var(--theme-surface-hover) !important;
+}
+html.dark .log-detail-dialog .dlg-ch-before {
+  color: #ff8a8a !important;
+  background: rgba(245, 108, 108, 0.16) !important;
+}
+html.dark .log-detail-dialog .dlg-ch-after {
+  color: #6fd49b !important;
+  background: rgba(70, 167, 109, 0.18) !important;
+}
+
+/* -------- 资产表（AssetsTable.vue） -------- */
+html.dark .asset-table-wrap,
+html.dark .table-card,
+html.dark .table-toolbar,
+html.dark .filter-area,
+html.dark .summary-bar {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .class-badge,
+html.dark .status-tag {
+  background: var(--theme-surface) !important;
+}
+html.dark .class-badge[data-class="IT"] { color: #7fb6ee !important; border-color: #4a8bd6 !important; }
+html.dark .class-badge[data-class="OA"] { color: #6fd49b !important; border-color: #4ea886 !important; }
+html.dark .class-badge[data-class="FA"] { color: #ffb37a !important; border-color: #d68a4a !important; }
+html.dark .class-badge[data-class="VE"] { color: #c9a8e6 !important; border-color: #9466b8 !important; }
+
+/* -------- 资产导入弹窗（AssetImportDialog.vue） -------- */
+html.dark .import-dialog .el-dialog,
+html.dark .preview-summary,
+html.dark .preview-table,
+html.dark .import-empty {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .preview-summary {
+  background: var(--theme-surface-subtle) !important;
+}
+
+/* -------- 资产二维码弹窗（AssetQrDialog.vue） -------- */
+html.dark .qr-dialog .el-dialog,
+html.dark .qr-card,
+html.dark .qr-info-row,
+html.dark .qr-actions-row {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .qr-tag,
+html.dark .qr-status-tag {
+  background: var(--theme-surface) !important;
+}
+
+/* 通用兜底：把所有以 #fff/#ffffff 直接写成 inline background 的容器在 dark 模式下变暗
+   （CSS 无法直接 attr-match 内联样式，但对常用容器 class 已覆盖足够） */
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--theme-primary-rgb), 0.55);
+}
+
+/* ============================================================
+   暗色模式：业务页面/组件里硬编码的浅色背景与文字兜底覆盖
+   （这些地方代码里写了 #ffffff / #fff / #2f2f33 等固定颜色，
+     在暗色下会“穿帮”，这里用 html.dark + 具体选择器统一兜底。）
+   ============================================================ */
+
+/* Dashboard 主容器 */
+html.dark .dashboard-wrap,
+html.dark .dashboard,
+html.dark .dashboard-content,
+html.dark .page-wrap {
+  background: var(--bg-page) !important;
+  color: var(--text-primary);
+}
+
+/* 资产表格 / 弹窗 / 操作面板：写死的 #ffffff 兜底 */
+html.dark .assets-table,
+html.dark .assets-table-wrap,
+html.dark .toolbar,
+html.dark .filter-panel,
+html.dark .filter-bar,
+html.dark .panel,
+html.dark .card-panel,
+html.dark .card-block,
+html.dark .table-wrap {
+  background: var(--bg-card) !important;
+  color: var(--text-primary);
+}
+
+/* Element Plus 容器 / 卡片 / 表格 cell 在暗色下需要跟随 */
+/* 资产表只让表格本体保留底色，工具栏和卡片外壳跟随页面背景 */
+html.dark .dashboard .assets-table,
+html.dark .dashboard .assets-table .filter-bar,
+html.dark .dashboard .assets-table .filter-row,
+html.dark .dashboard .assets-table .table-card,
+html.dark .dashboard .assets-table .table-card.el-card,
+html.dark .dashboard .assets-table .table-card .el-card__body {
+  background: transparent !important;
+}
+html.dark .dashboard .assets-table .gold-table,
+html.dark .dashboard .assets-table .gold-table .el-table__inner-wrapper,
+html.dark .dashboard .assets-table .gold-table .el-table__header-wrapper,
+html.dark .dashboard .assets-table .gold-table .el-table__body-wrapper,
+html.dark .dashboard .assets-table .gold-table .el-scrollbar,
+html.dark .dashboard .assets-table .gold-table .el-scrollbar__view {
+  background: var(--bg-page) !important;
+}
+html.dark .dashboard .assets-table .gold-table tr,
+html.dark .dashboard .assets-table .gold-table th.el-table__cell,
+html.dark .dashboard .assets-table .gold-table td.el-table__cell,
+html.dark .dashboard .assets-table .gold-table.el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: var(--bg-page) !important;
+  background-color: var(--bg-page) !important;
+}
+html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table__cell {
+  background: var(--bg-hover) !important;
+  background-color: var(--bg-hover) !important;
+}
+html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--left,
+html.dark .dashboard .assets-table .gold-table td.el-table-fixed-column--right,
+html.dark .dashboard .assets-table .gold-table .el-table__fixed td.el-table__cell,
+html.dark .dashboard .assets-table .gold-table .el-table__fixed-right td.el-table__cell {
+  background: var(--bg-page) !important;
+  background-color: var(--bg-page) !important;
+}
+html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table-fixed-column--left,
+html.dark .dashboard .assets-table .gold-table tbody tr:hover > td.el-table-fixed-column--right,
+html.dark .dashboard .assets-table .gold-table .el-table__fixed tbody tr:hover > td.el-table__cell,
+html.dark .dashboard .assets-table .gold-table .el-table__fixed-right tbody tr:hover > td.el-table__cell {
+  background: var(--theme-surface-muted) !important;
+  background-color: var(--theme-surface-muted) !important;
+}
+
+html.dark .el-table,
+html.dark .el-table tr,
+html.dark .el-table th.el-table__cell,
+html.dark .el-table td.el-table__cell {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-table th.el-table__cell {
+  background: var(--theme-surface-subtle) !important;
+  color: var(--text-secondary) !important;
+}
+html.dark .el-table--striped .el-table__body tr.el-table__row--striped td.el-table__cell {
+  background: var(--theme-surface-subtle) !important;
+}
+html.dark .el-table tbody tr:hover > td.el-table__cell {
+  background: var(--bg-hover) !important;
+}
+html.dark .el-card {
+  background: var(--bg-card) !important;
+  color: var(--text-primary);
+}
+
+/* 对话框 / 抽屉 / 弹层在暗色下整体使用暗背景 */
+html.dark .el-dialog,
+html.dark .el-drawer,
+html.dark .el-message-box {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-dialog__title,
+html.dark .el-message-box__title,
+html.dark .el-drawer__title {
+  color: var(--text-primary) !important;
+}
+html.dark .el-dialog__body,
+html.dark .el-message-box__content,
+html.dark .el-drawer__body {
+  color: var(--text-primary) !important;
+}
+html.dark .el-overlay {
+  background: rgba(0, 0, 0, 0.65) !important;
+}
+
+/* 输入控件：暗色背景 + 浅文字 */
+html.dark .el-input__wrapper,
+html.dark .el-textarea__inner,
+html.dark .el-select__wrapper {
+  background: var(--theme-surface) !important;
+  box-shadow: 0 0 0 1px var(--theme-input-border) inset !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-input__inner,
+html.dark .el-textarea__inner {
+  color: var(--text-primary) !important;
+}
+html.dark .el-input__wrapper.is-focus,
+html.dark .el-textarea__inner:focus,
+html.dark .el-select__wrapper.is-focused {
+  box-shadow: 0 0 0 1px var(--theme-primary) inset !important;
+}
+html.dark .el-input.is-disabled .el-input__wrapper {
+  background: var(--theme-surface-muted) !important;
+}
+
+/* 下拉/选择菜单 */
+html.dark .el-select-dropdown,
+html.dark .el-popper.is-light,
+html.dark .el-dropdown-menu,
+html.dark .el-picker__popper {
+  background: var(--bg-card) !important;
+  border-color: var(--theme-border) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-select-dropdown__item {
+  color: var(--text-primary) !important;
+}
+html.dark .el-select-dropdown__item.hover,
+html.dark .el-select-dropdown__item:hover {
+  background: var(--bg-hover) !important;
+}
+html.dark .el-select-dropdown__item.selected {
+  color: var(--theme-primary) !important;
+  font-weight: 600;
+}
+html.dark .el-popper.is-light .el-popper__arrow::before {
+  background: var(--bg-card) !important;
+  border-color: var(--theme-border) !important;
+}
+
+/* 默认按钮（非 primary）：暗色 + 浅文字 */
+html.dark .el-button:not(.el-button--primary):not(.el-button--success):not(.el-button--warning):not(.el-button--danger):not(.el-button--info) {
+  background: var(--theme-surface) !important;
+  border-color: var(--theme-input-border) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .el-button:not(.el-button--primary):not(.el-button--success):not(.el-button--warning):not(.el-button--danger):not(.el-button--info):hover {
+  background: var(--theme-surface-hover) !important;
+  border-color: var(--theme-primary) !important;
+  color: var(--theme-primary) !important;
+}
+
+/* 分页 */
+html.dark .el-pagination,
+html.dark .el-pagination button,
+html.dark .el-pagination .el-pager li {
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+}
+html.dark .el-pagination .el-pager li.is-active,
+html.dark .el-pagination .el-pager li:hover {
+  color: var(--theme-primary) !important;
+}
+
+/* 日志页 Messages.vue 里大量写死的颜色 */
+html.dark .messages-page,
+html.dark .messages-wrap,
+html.dark .log-list,
+html.dark .log-card,
+html.dark .log-item,
+html.dark .log-detail-dialog,
+html.dark .filter-row {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+html.dark .messages-page,
+html.dark .messages-wrap {
+  background: var(--bg-page) !important;
+}
+html.dark .log-detail-dialog .meta,
+html.dark .log-detail-dialog .json {
+  background: var(--theme-surface) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 二维码弹窗 AssetQrDialog */
+html.dark .qr-dialog,
+html.dark .qr-card,
+html.dark .qr-panel,
+html.dark .qr-block {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 导入弹窗 AssetImportDialog 里写死的 #fbf6ec / #ffffff */
+html.dark .import-dialog,
+html.dark .preview-summary,
+html.dark .preview-table,
+html.dark .upload-block,
+html.dark .drop-zone {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 全局：所有强制 background: #ffffff !important 的容器统一兜底 */
+html.dark [style*="background: #ffffff"],
+html.dark [style*="background-color: #ffffff"],
+html.dark [style*="background:#ffffff"],
+html.dark [style*="background-color:#ffffff"] {
+  background-color: var(--bg-card) !important;
 }
